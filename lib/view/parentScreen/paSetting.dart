@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/parentScreen/parentChangePassword.dart';
-import 'package:kcmit/view/studentScreen/stMenuItem/stContact.dart';
+import 'package:kcmit/view/Contact.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
 
 class ParentSetting extends StatefulWidget {
@@ -62,7 +62,7 @@ class _ParentSettingState extends State<ParentSetting> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudentContact()),
+                    MaterialPageRoute(builder: (context) => Contact()),
                   );
                 },
               ),

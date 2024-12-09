@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:kcmit/view/Calendar.dart';
 import 'package:kcmit/view/teacherScreen/ThomeScreen.dart';
+import 'package:kcmit/view/teacherScreen/facultySetting.dart';
 
 
 class FactHomeMain extends StatefulWidget {
@@ -18,7 +18,7 @@ class _FactHomeMainState extends State<FactHomeMain> {
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
       TeachHomeScreen(),
-      CalendarScreen(),
+      FacultySetting(),
       // StudentMenu(),
     ];
 
@@ -69,8 +69,8 @@ class _FactHomeMainState extends State<FactHomeMain> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.calendar_month_outlined,),
-                label: 'Calendar',
+                icon: Icon(Icons.settings_outlined,),
+                label: 'Setting',
               ),
               // BottomNavigationBarItem(
               //   icon: Icon(Icons.menu,),

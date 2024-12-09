@@ -51,6 +51,11 @@ dependencies:
   get: ^4.6.6
   flutter_bs_ad_calendar: ^1.0.4
   image_picker: ^1.1.2
+  firebase_messaging: ^15.1.6
+  flutter_local_notifications: ^18.0.1
+  firebase_core: ^3.8.1
+#  firebase_auth: ^5.3.4
+  firebase_database: ^11.2.0
 
 dev_dependencies:
   flutter_test:

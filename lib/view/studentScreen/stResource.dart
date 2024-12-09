@@ -256,7 +256,6 @@ class _StudentResourceState extends State<StudentResource> {
                                 _isExpandedList[index]
                                     ? resource['desc']
                                     : resource['desc'],
-                                // resource['desc'] ?? 'No Description',
                                 maxLines: _isExpandedList[index] ? null : 2,
                                 overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
                               ),
@@ -290,7 +289,7 @@ class _StudentResourceState extends State<StudentResource> {
                                     child: ElevatedButton.icon(
                                       onPressed: () {
                                         final fileUrl =
-                                            "http://192.168.1.78:5000/${resource['url']}";
+                                            "http://46.250.248.179:5000/${resource['url']}";
                                         final customPath =
                                             "/storage/emulated/0/Download/${resource['url']}";
                                         print('Download URL: $fileUrl');
@@ -304,9 +303,8 @@ class _StudentResourceState extends State<StudentResource> {
                                         size: 18,
                                         color: Colors.white,
                                       ),
-                                      label: const Text(
-                                        'Download',
-                                        style: TextStyle(fontSize: 15, color: Colors.white),
+                                      label: const Text('Download',
+                                          style: TextStyle(fontSize: 15, color: Colors.white),
                                       ),
                                     ),
                                   ),

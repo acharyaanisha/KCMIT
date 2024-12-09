@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:kcmit/controller/loginController.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:kcmit/firebase.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
@@ -14,6 +13,8 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferences.getInstance();
   await FlutterSecureStorage().read(key: 'jwt_token');
+  // await Firebase.initializeApp();
+  // await FirebaseApi().initNotifications();
 
   runApp(
     MultiProvider(

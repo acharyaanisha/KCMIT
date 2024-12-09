@@ -47,6 +47,10 @@ class Config{
 
   static String getParentChangePassword() => '$baseUrl/$_parentChangePasswordEndpoint';
 
+  static const String _facultyChangePasswordEndpoint = "api/faculty/changePassword";
+
+  static String getFacultyChangePassword() => '$baseUrl/$_facultyChangePasswordEndpoint';
+
   // Resources
   static const String _studentResourcesEndpoint = "api/resource/viewAll";
 

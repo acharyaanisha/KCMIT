@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
+import 'package:kcmit/view/parentScreen/parentChangePassword.dart';
 import 'package:kcmit/view/Contact.dart';
-import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
+import 'package:kcmit/view/teacherScreen/facultyChangePassword.dart';
 
-class StudentSetting extends StatefulWidget {
-  const StudentSetting({super.key});
+class FacultySetting extends StatefulWidget {
+  const FacultySetting({super.key});
 
   @override
-  State<StudentSetting> createState() => _StudentSettingState();
+  State<FacultySetting> createState() => _FacultySettingState();
 }
 
-class _StudentSettingState extends State<StudentSetting> {
+class _FacultySettingState extends State<FacultySetting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +25,7 @@ class _StudentSettingState extends State<StudentSetting> {
           child: AppBar(
             title: Text("Setting"),
             centerTitle: true,
+            automaticallyImplyLeading: false,
           ),
         ),
       ),
@@ -39,7 +41,7 @@ class _StudentSettingState extends State<StudentSetting> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudentChangePassword()),
+                    MaterialPageRoute(builder: (context) => FacultyChangePassword()),
                   );
                 },
               ),
@@ -51,17 +53,6 @@ class _StudentSettingState extends State<StudentSetting> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => Policy()),
-                  );
-                },
-              ),
-              SizedBox(height: 40),
-              _buildProfileButton(
-                label: "Rate Us",
-                icon: Icons.star_rate_outlined,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => StudentChangePassword()),
                   );
                 },
               ),

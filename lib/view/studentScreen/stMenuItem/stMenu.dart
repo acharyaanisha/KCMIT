@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/service/section.dart';
-import 'package:kcmit/view/studentScreen/stMenuItem/stContact.dart';
+import 'package:kcmit/view/Contact.dart';
 import 'package:kcmit/view/studentScreen/stExam.dart';
 import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/studentScreen/stMenuItem/stResult.dart';
@@ -62,7 +62,7 @@ class _StudentMenuState extends State<StudentMenu> {
                   Icons.contact_phone_outlined,
                   // "assets/contact.png",
                   "Contact",
-                  StudentContact(),
+                  Contact(),
                     Colors.deepPurple.shade300
                 ),
                 IconAndText(

@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:kcmit/model/authenticateModel/parentAuthenticateModel.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/parentScreen/paHomeMain.dart';
-import 'package:kcmit/view/parentScreen/paHomeScreen.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
 import 'package:kcmit/view/studentScreen/sauthentication/loginAsStudent.dart';
-import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:kcmit/view/teacherScreen/tauthentication/loginAsTeacher.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -186,7 +184,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginAsStudent()),
               );
@@ -205,7 +203,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginAsTeacher()),
               );

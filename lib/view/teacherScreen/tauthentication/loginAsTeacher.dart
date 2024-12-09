@@ -77,7 +77,7 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
         errorMessage = null;
       });
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => FactHomeMain()),
       );
@@ -192,7 +192,7 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginAsStudent()),
               );
@@ -211,7 +211,7 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
         children: [
           TextButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => LoginAsParent()),
               );
