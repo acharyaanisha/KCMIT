@@ -69,8 +69,8 @@ class _FactHomeMainState extends State<FactHomeMain> {
                 label: 'Home',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.assignment_outlined,),
-                label: 'Assignment',
+                icon: Icon(Icons.calendar_month_outlined,),
+                label: 'Calendar',
               ),
               // BottomNavigationBarItem(
               //   icon: Icon(Icons.menu,),

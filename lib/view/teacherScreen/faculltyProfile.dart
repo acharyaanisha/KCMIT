@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:kcmit/model/facultyProfileModel.dart';
-import 'package:kcmit/model/parentProfile.dart';
+import 'package:kcmit/model/profileModel/facultyProfileModel.dart';
+import 'package:kcmit/model/profileModel/parentProfile.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
 import 'package:kcmit/view/teacherScreen/facultyToken.dart';

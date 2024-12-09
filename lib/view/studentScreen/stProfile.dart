@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:kcmit/model/studentProfileModel.dart';
+import 'package:kcmit/model/profileModel/studentProfileModel.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
+import 'package:kcmit/view/studentScreen/uploadProfile.dart';
 import 'package:provider/provider.dart';
 import '../../service/config.dart';
 
@@ -61,11 +62,23 @@ class _StProfileState extends State<StProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Student Profile'),
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60),
+          child: AppBar(
+            title: const Text('Student Profile'),
+            centerTitle: true,
+            elevation: 0,
+            actions: [
+              IconButton(onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => EditProfile()),
+                );
+              }, icon: Icon(Icons.edit)),
+            ],
+          ),
+        ),
+      // ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(

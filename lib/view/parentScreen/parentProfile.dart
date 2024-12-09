@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:kcmit/model/parentProfile.dart';
+import 'package:kcmit/model/profileModel/parentProfile.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';

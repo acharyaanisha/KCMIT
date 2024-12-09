@@ -76,4 +76,9 @@ class Config{
   static const String _examListEndpoint = "api/exam/list";
 
   static String getExamList() => '$baseUrl/$_examListEndpoint';
+
+  //Student Profile Change
+  static const String _stuploadProfileEndpoint = "api/student/uploadProfilePicture";
+
+  static String getStUploadProfile() => '$baseUrl/$_stuploadProfileEndpoint';
 }

@@ -9,9 +9,7 @@ import 'package:kcmit/view/parentScreen/StudentProfile/StudentProfile.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
 import 'package:kcmit/view/studentScreen/stAttendance.dart';
 import 'package:kcmit/view/studentScreen/stNotices.dart';
-import 'package:kcmit/view/studentScreen/stProfile.dart';
 import 'package:kcmit/view/studentScreen/stMenuItem/stResult.dart';
-import 'package:kcmit/view/studentScreen/stRoutine.dart';
 import 'package:provider/provider.dart';
 
 class StudentHomePage extends StatefulWidget {

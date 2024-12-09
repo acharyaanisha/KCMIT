@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:kcmit/model/studentProfileModel.dart';
+import 'package:kcmit/model/profileModel/studentProfileModel.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:provider/provider.dart';

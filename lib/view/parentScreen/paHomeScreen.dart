@@ -7,7 +7,6 @@ import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/parentScreen/StudentProfile/studentHomePage.dart';
 import 'package:kcmit/view/parentScreen/parentProfile.dart';
 import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
-import 'package:kcmit/view/studentScreen/StHomeScreen.dart';
 import 'package:provider/provider.dart';
 
 class PaHomeScreen extends StatefulWidget {

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "995076747381",
+    "project_id": "kcmit-98d88",
+    "storage_bucket": "kcmit-98d88.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:995076747381:android:a0a8a9c40fc0d81796c83c",
+        "android_client_info": {
+          "package_name": "com.example.kcmit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByeM-iAAWmujW1LVDwbcEFYRMzIeMJGlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

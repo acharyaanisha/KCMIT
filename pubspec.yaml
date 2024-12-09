@@ -50,6 +50,7 @@ dependencies:
   permission_handler: ^11.3.1
   get: ^4.6.6
   flutter_bs_ad_calendar: ^1.0.4
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
