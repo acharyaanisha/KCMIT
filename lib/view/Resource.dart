@@ -6,14 +6,14 @@ import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/studentScreen/pdfScreen.dart';
 import 'package:path_provider/path_provider.dart';
 
-class StudentResource extends StatefulWidget {
-  const StudentResource({super.key});
+class Resource extends StatefulWidget {
+  const Resource({super.key});
 
   @override
-  State<StudentResource> createState() => _StudentResourceState();
+  State<Resource> createState() => _ResourceState();
 }
 
-class _StudentResourceState extends State<StudentResource> {
+class _ResourceState extends State<Resource> {
   String errorMessage = '';
   bool isLoading = true;
   List<dynamic> resourceData = [];
@@ -112,7 +112,7 @@ class _StudentResourceState extends State<StudentResource> {
         throw Exception("Failed to download PDF. Status Code: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error downloading PDF: $e");
+      print("Error downloading PDFeeee: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to download PDF')),
       );

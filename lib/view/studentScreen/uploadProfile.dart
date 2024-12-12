@@ -60,9 +60,7 @@ class _EditProfileState extends State<EditProfile> {
   }
 
   Future<void> updateProfile() async {
-    final token = context
-        .read<studentTokenProvider>()
-        .token;
+    final token = context.read<studentTokenProvider>().token;
     final url = Config.getStUploadProfile();
 
     try {

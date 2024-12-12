@@ -33,7 +33,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
     });
   }
 
-  // Map weekday index to day name (Monday, Tuesday, etc.)
+
   String getDayFromIndex(int dayIndex) {
     switch (dayIndex) {
       case 1: return 'MONDAY';
@@ -43,7 +43,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
       case 5: return 'FRIDAY';
       case 6: return 'SATURDAY';
       case 7: return 'SUNDAY';
-      default: return 'MONDAY'; // Default fallback if the index is invalid
+      default: return 'MONDAY';
     }
   }
 
@@ -69,7 +69,12 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
           isLoading = false;
         });
 
-        // Ensure selectedItem matches a key in routineData
+        if (routineData.isEmpty) {
+          setState(() {
+            errorMessage = 'assets/no_data.png';
+          });
+        }
+
         if (!routineData.containsKey(selectedItem)) {
           setState(() {
             selectedItem = routineData.keys.isNotEmpty ? routineData.keys.first : null;
@@ -77,13 +82,13 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
         }
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load data.';
+        errorMessage = 'assets/no_data.png';
         isLoading = false;
       });
     }
@@ -110,13 +115,13 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load data.';
+        errorMessage = "assets/no_data.png";
         isLoading = false;
       });
     }
@@ -140,8 +145,12 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
           ? const Center(child: CircularProgressIndicator())
           : routineData.isEmpty
           ? Center(
-          child: Text(
-              errorMessage.isNotEmpty ? errorMessage : 'No routine data found.'))
+        child: errorMessage.isNotEmpty
+            ? (errorMessage.contains('no_data.png')
+            ? Image.asset(errorMessage)
+            : Text(errorMessage))
+            : Text('No routine data found.'),
+      )
           : Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -185,7 +194,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
             ),
             selectedItem != null
                 ? Container(
-              height: 635,
+              height: 640,
               child: Column(
                 children: [
                   if (routineData[selectedItem] != null)
@@ -205,16 +214,15 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
                                   borderRadius: const BorderRadius.vertical(
                                     bottom: Radius.circular(30),
                                   ),
-                                  child: Icon(Icons.timer_outlined, size: 50)
-                              ),
+                                  child: Icon(Icons.timer_outlined, size: 50)),
                               title: Text('${routine['startTime']} - ${routine['endTime']}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(routine['subject'],style: TextStyle(fontSize: 15),),
-                                  Text('${routine['room']}',style: TextStyle(fontSize: 15),),
-                                  Text('${routine['faculty']}',style: TextStyle(fontSize: 15),),
+                                  Text(routine['subject'], style: TextStyle(fontSize: 15)),
+                                  Text('${routine['room']}', style: TextStyle(fontSize: 15)),
+                                  Text('${routine['faculty']}', style: TextStyle(fontSize: 15)),
                                 ],
                               ),
                             ),

@@ -1,8 +1,7 @@
 class Config{
 
-  static const String baseUrl = "http://46.250.248.179:5000";
-  // static const String baseUrl = "http://kcmit-api.kcmit.edu.np";
-  // static const String baseUrl = "http://192.168.1.78:kcmit-api.kcmit.edu.np";
+  // static const String baseUrl = "http://46.250.248.179:5000";
+  static const String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
 
   //Authentication
   static const String _studentAuthenticateEndpoint = "api/authenticate/student";

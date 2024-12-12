@@ -5,7 +5,7 @@ import 'package:kcmit/service/section.dart';
 import 'package:kcmit/view/Calendar.dart';
 import 'package:kcmit/view/studentScreen/stAttendance.dart';
 import 'package:kcmit/view/studentScreen/stNotices.dart';
-import 'package:kcmit/view/studentScreen/stResource.dart';
+import 'package:kcmit/view/Resource.dart';
 import 'package:kcmit/view/studentScreen/stMenuItem/stMenu.dart';
 import 'package:kcmit/view/teacherScreen/factRoutine.dart';
 import 'package:kcmit/view/teacherScreen/faculltyProfile.dart';
@@ -133,12 +133,11 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           Icons.download_for_offline_outlined,
                           // "assets/resource.png",
                           "Resources",
-                          StudentResource(),
+                            Resource(),
                             Colors.red.shade400
                         ),
                         IconAndText(
                           Icons.calendar_month_outlined,
-                          // "assets/calendar.png",
                           "Calender",
                           CalendarScreen(),
                             Colors.green.shade400

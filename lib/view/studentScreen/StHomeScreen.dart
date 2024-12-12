@@ -10,7 +10,7 @@ import 'package:kcmit/view/studentScreen/stAttendance.dart';
 import 'package:kcmit/view/studentScreen/stFacultyMember.dart';
 import 'package:kcmit/view/studentScreen/stNotices.dart';
 import 'package:kcmit/view/studentScreen/stProfile.dart';
-import 'package:kcmit/view/studentScreen/stResource.dart';
+import 'package:kcmit/view/Resource.dart';
 import 'package:kcmit/view/studentScreen/stRoutine.dart';
 
 class StHomeScreen extends StatefulWidget {
@@ -182,7 +182,7 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
                           Icons.download_for_offline_outlined,
                           // "assets/resource.png",
                           "Resources",
-                          StudentResource(),
+                            Resource(),
                             Colors.purple.shade300
                         ),
                         IconAndText(

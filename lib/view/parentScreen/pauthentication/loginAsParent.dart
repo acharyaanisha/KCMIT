@@ -18,7 +18,6 @@ class LoginAsParent extends StatefulWidget {
 }
 
 class _LoginAsParentState extends State<LoginAsParent> {
-
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -27,7 +26,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
   String? successMessage;
   bool isLoading = false;
 
-
+  /// Function to authenticate a parent
   Future<void> authenticateParent(String username, String password) async {
     if (username.isEmpty || password.isEmpty) {
       setState(() {
@@ -38,10 +37,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
     }
 
     final url = Config.getParent();
-    print("Authenticating to URL: $url");
-
     final authenticateRequest = Parent(email: username, password: password);
-    print("Sending payload: ${jsonEncode(authenticateRequest.toJson())}");
 
     setState(() {
       errorMessage = null;
@@ -56,32 +52,33 @@ class _LoginAsParentState extends State<LoginAsParent> {
         body: jsonEncode(authenticateRequest.toJson()),
       );
 
-      print("Response body:${response.body}");
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        final String token = responseBody['token'];
 
-      // if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-      print("response:$responseBody");
-      final String token = responseBody['token'];
-      context.read<parentTokenProvider>().setToken(token);
+        context.read<parentTokenProvider>().setToken(token);
 
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
+        await prefs.setString('role', 'parent');
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', token);
+        setState(() {
+          successMessage = 'Login successful!';
+          errorMessage = null;
+        });
 
-      print("Token:${token}");
-
-      setState(() {
-        successMessage = 'Login successful!';
-        errorMessage = null;
-      });
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PaHomeMain()),
-      );
-    }
-    catch (e) {
-      print("${e}");
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PaHomeMain()),
+        );
+      } else {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          errorMessage = responseBody['message'] ?? 'Login failed. Please try again.';
+          successMessage = null;
+        });
+      }
+    } catch (e) {
       setState(() {
         errorMessage = 'An error occurred. Please try again later.';
         successMessage = null;
@@ -92,6 +89,8 @@ class _LoginAsParentState extends State<LoginAsParent> {
       });
     }
   }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,6 +120,22 @@ class _LoginAsParentState extends State<LoginAsParent> {
             ),
             SizedBox(height: 20.0),
             _buildLoginButton(),
+            if (errorMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  errorMessage!,
+                  style: TextStyle(color: Colors.red, fontSize: 14),
+                ),
+              ),
+            if (successMessage != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  successMessage!,
+                  style: TextStyle(color: Colors.green, fontSize: 14),
+                ),
+              ),
             SizedBox(height: 10.0),
             _buildLoginAsStudent(),
             _buildLoginAsTeacher(),
@@ -130,6 +145,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
     );
   }
 
+  /// Build Text Field Widget
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -157,17 +173,22 @@ class _LoginAsParentState extends State<LoginAsParent> {
     );
   }
 
+  /// Build Login Button Widget
   Widget _buildLoginButton() {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: isLoading ? null : () {
+        onPressed: isLoading
+            ? null
+            : () {
           authenticateParent(usernameController.text, passwordController.text);
         },
-
-        child: Text('Login',style: TextStyle(color: Colors.white,fontSize: 15),),
+        child: Text(
+          'Login',
+          style: TextStyle(color: Colors.white, fontSize: 15),
+        ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff2263A9),
+          backgroundColor: const Color(0xff323465),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
@@ -177,6 +198,7 @@ class _LoginAsParentState extends State<LoginAsParent> {
     );
   }
 
+  /// Build "Login as Student" Widget
   Widget _buildLoginAsStudent() {
     return Center(
       child: Row(
@@ -189,13 +211,14 @@ class _LoginAsParentState extends State<LoginAsParent> {
                 MaterialPageRoute(builder: (context) => LoginAsStudent()),
               );
             },
-            child:  Text("Login as Student?"),
+            child: Text("Login as Student?"),
           ),
         ],
       ),
     );
   }
 
+  /// Build "Login as Teacher" Widget
   Widget _buildLoginAsTeacher() {
     return Center(
       child: Row(
@@ -215,4 +238,3 @@ class _LoginAsParentState extends State<LoginAsParent> {
     );
   }
 }
-

@@ -72,10 +72,6 @@ class _FactHomeMainState extends State<FactHomeMain> {
                 icon: Icon(Icons.settings_outlined,),
                 label: 'Setting',
               ),
-              // BottomNavigationBarItem(
-              //   icon: Icon(Icons.menu,),
-              //   label: 'Menu',
-              // ),
             ],
           ),
         ),

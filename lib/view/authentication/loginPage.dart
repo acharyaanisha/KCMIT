@@ -26,7 +26,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xffa4c3e3),
+      backgroundColor: Color(0xff323465),
+      // backgroundColor: Color(0xffa4c3e3),
       body: Stack(
         children: [
           SingleChildScrollView(
@@ -41,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
                     height: 300,
                     child: Center(
                       child: Image.asset(
-                        'assets/college-students.png',
+                        'assets/login_page.png',
                         height: 750.0,
                         width: 550.0,
                         // fit: BoxFit.contain,
@@ -60,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Visibility(
                 visible: _showButtons,
                 child: Container(
-                  height: 450,
+                  height: 410,
                   padding: EdgeInsets.all(20.0),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -79,9 +80,10 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(height: 15,),
-                      Text("KCMIT-A pioneer BIM college of Kathmandu",style: TextStyle(
+                      Text("KCMIT-A Pioneer BIM College of Kathmandu",style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
+                        // fontFamily: f
                       ),
                         textAlign: TextAlign.center,
                       ),
@@ -91,12 +93,12 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 50.0),
+                      SizedBox(height: 30.0),
                       _buildLoginButtonForTeacher(),
                       SizedBox(height: 15.0),
                       _buildLoginButtonForStudent(),
                       SizedBox(height: 15.0),
-                      _buildLoginButtonForParent(),
+                      // _buildLoginButtonForParent(),
                     ],
                   ),
                 ),
@@ -123,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
           style: TextStyle(color: Colors.white, fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff2263A9),
+          backgroundColor: const Color(0xff323465),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
@@ -145,13 +147,15 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Text(
           'Login as Student',
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: TextStyle(color: Color(0xdd3a3a72), fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xff588cd0),
+          backgroundColor: Colors.white,
+          // backgroundColor: const Color(0xdd3a3a72),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
+          side: BorderSide(color: Color(0xff323465),style: BorderStyle.solid),
           padding: const EdgeInsets.symmetric(vertical: 15.0),
         ),
       ),
@@ -170,14 +174,16 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Text(
           'Login as Parent',
-          style: TextStyle(color: Color(0xff588cd0), fontSize: 15),
+          style: TextStyle(color: Colors.white, fontSize: 15),
+          // style: TextStyle(color: Color(0xff323465), fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xdd3a3a72),
+          // backgroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          side: BorderSide(color: Color(0xff588cd0),style: BorderStyle.solid),
+          side: BorderSide(color: Color(0xff323465),style: BorderStyle.solid),
           padding: const EdgeInsets.symmetric(vertical: 15.0),
         ),
       ),
