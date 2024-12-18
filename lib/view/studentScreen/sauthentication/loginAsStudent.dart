@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
-import 'package:kcmit/controller/loginController.dart';
 import 'package:kcmit/model/authenticateModel/studentAuthenticateModel.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/authentication/forgetPassword.dart';
@@ -28,6 +26,92 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
   String? errorMessage;
   String? successMessage;
   bool isLoading = false;
+
+
+  Future<void> authenticateStudent(String username, String password) async {
+    if (username.isEmpty || password.isEmpty) {
+      setState(() {
+        errorMessage = 'Please enter both username and password.';
+        successMessage = null;
+      });
+      return;
+    }
+
+    final url = Config.getStudent();
+    print("Authenticating to URL: $url");
+
+    final authenticateRequest = Student(email: username, password: password);
+    print("Sending payload: ${jsonEncode(authenticateRequest.toJson())}");
+
+    setState(() {
+      errorMessage = null;
+      successMessage = null;
+      isLoading = true;
+    });
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(authenticateRequest.toJson()),
+      );
+
+      print("Response body: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final responseBody = jsonDecode(response.body);
+        print("response: $responseBody");
+
+        final String token = responseBody['token'];
+        context.read<studentTokenProvider>().setToken(token);
+        context.read<studentTokenProvider>().getRoleFromToken(token);
+
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // await prefs.setString('token', token);
+
+        print("Token: $token");
+
+        setState(() {
+          successMessage = 'Login successful!';
+          errorMessage = null;
+        });
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => StHomeMain()),
+        );
+
+        await saveLoginState(token);
+
+      } else {
+        final responseBody = jsonDecode(response.body);
+        setState(() {
+          errorMessage = responseBody['message'] ?? 'Login failed. Please try again.';
+          successMessage = null;
+        });
+      }
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        if (e is http.ClientException || e.toString().contains("Failed host lookup")) {
+          errorMessage = 'Server is down.';
+        } else {
+          errorMessage = 'An error occurred. Please try again later.';
+        }
+        successMessage = null;
+      });
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Future<void> saveLoginState(String token) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('authToken', token);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +167,6 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
                   label: 'Your Password',
                   isPassword: true,
                 ),
-                const SizedBox(height: 20.0),
-                _buildLoginOptions(),
-                const SizedBox(height: 20.0),
-                _buildLoginButton(),
                 if (errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 10.0),
@@ -94,6 +174,9 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
                       errorMessage!,
                       style: const TextStyle(color: Colors.red, fontSize: 14),
                     ),
+                    // child: Image.asset(
+                    //   errorMessage!,
+                    //   ),
                   ),
                 if (successMessage != null)
                   Padding(
@@ -103,6 +186,10 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
                       style: const TextStyle(color: Colors.green, fontSize: 14),
                     ),
                   ),
+                const SizedBox(height: 20.0),
+                _buildLoginOptions(),
+                const SizedBox(height: 20.0),
+                _buildLoginButton(),
                 const SizedBox(height: 10.0),
                 _buildLoginAsTeacher(),
                 const SizedBox(height: 20.0),
@@ -237,69 +324,5 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
         ],
       ),
     );
-  }
-
-  Future<void> authenticateStudent(String username, String password) async {
-    if (username.isEmpty || password.isEmpty) {
-      setState(() {
-        errorMessage = 'Please enter both username and password.';
-        successMessage = null;
-      });
-      return;
-    }
-
-    final url = Config.getStudent();
-    final authenticateRequest = Student(email: username, password: password);
-
-    setState(() {
-      errorMessage = null;
-      successMessage = null;
-      isLoading = true;
-    });
-
-    try {
-      final response = await http.post(
-        Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(authenticateRequest.toJson()),
-      );
-
-      if (response.statusCode == 200) {
-        final responseBody = jsonDecode(response.body);
-        final String token = responseBody['token'];
-
-        context.read<studentTokenProvider>().setToken(token);
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', token);
-        await prefs.setString('role', 'student');
-
-        setState(() {
-          successMessage = 'Login successful!';
-          errorMessage = null;
-        });
-
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => StHomeMain()),
-        );
-      } else {
-        final responseBody = jsonDecode(response.body);
-        setState(() {
-          errorMessage = responseBody['message'] ??
-              'Login failed. Please try again.';
-          successMessage = null;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        errorMessage = 'An error occurred. Please try again later.';
-        successMessage = null;
-      });
-    } finally {
-      setState(() {
-        isLoading = false;
-      });
-    }
   }
 }

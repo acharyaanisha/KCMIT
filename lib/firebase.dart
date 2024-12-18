@@ -11,7 +11,7 @@ Future<void> handleBackgroundMessage(RemoteMessage message) async {
 
 class FirebaseApi {
 
-  String baseUrl = "http://46.250.248.179:5000";
+  String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
 
   final _firebaseMessaging = FirebaseMessaging.instance;
 
@@ -104,7 +104,7 @@ class FirebaseApi {
             _androidChannel.name,
             channelDescription: _androidChannel.description,
             styleInformation: bigPictureStyleInformation,
-            icon: '@drawable/epalika',
+            icon: '@drawable/kcmit',
           ),
         );
       } else {
@@ -128,6 +128,16 @@ class FirebaseApi {
     });
   }
 
+  // Future<void> subscribeToRoleTopic(String role) async {
+  //   if (role == "student") {
+  //     FirebaseMessaging.instance.subscribeToTopic("students");
+  //   } else if (role == "faculty") {
+  //     FirebaseMessaging.instance.subscribeToTopic("faculty");
+  //   } else if (role == "parent") {
+  //     FirebaseMessaging.instance.subscribeToTopic("parents");
+  //   }
+  // }
+
   Future<void> subscribeToTopics() async {
     try {
       await _firebaseMessaging.subscribeToTopic('all');
@@ -143,6 +153,7 @@ class FirebaseApi {
 
     print("FCM Token: $FCMToken");
 
+    // await subscribeToRoleTopic();
     await subscribeToTopics();
     await initPushNotifications();
     await initLocalNotifications();

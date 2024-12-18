@@ -13,8 +13,8 @@ void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferences.getInstance();
   await FlutterSecureStorage().read(key: 'jwt_token');
-  // await Firebase.initializeApp();
-  // await FirebaseApi().initNotifications();
+  await Firebase.initializeApp();
+  await FirebaseApi().initNotifications();
 
   runApp(
     MultiProvider(

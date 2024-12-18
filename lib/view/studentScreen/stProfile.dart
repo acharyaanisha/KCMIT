@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 import 'package:kcmit/model/profileModel/studentProfileModel.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
@@ -16,9 +18,12 @@ class StProfile extends StatefulWidget {
 }
 
 class _StProfileState extends State<StProfile> {
+
   StudentProfile? studentProfile;
   String errorMessage = '';
   bool isLoading = true;
+  File? _image;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -68,14 +73,16 @@ class _StProfileState extends State<StProfile> {
             title: const Text('Student Profile'),
             centerTitle: true,
             elevation: 0,
-            actions: [
-              IconButton(onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => EditProfile()),
-                );
-              }, icon: Icon(Icons.edit)),
-            ],
+
+            // actions: [
+            //   IconButton(onPressed: (){
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (_) => EditProfile()),
+            //     );
+            //   }, icon: Icon(Icons.edit)),
+            // ],
+
           ),
         ),
       // ),
@@ -83,9 +90,8 @@ class _StProfileState extends State<StProfile> {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              // Color(0xffC82025),
-              Color(0xff323465),Color(0xffC82025),
-              // Color(0xff323465),
+              Color(0xff323465),
+              Color(0xffC82025),
               ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -116,20 +122,36 @@ class _StProfileState extends State<StProfile> {
                 // Profile Header
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 20),
-                  child: CircleAvatar(
-                    radius: 30,
-                    backgroundColor: Colors.white,
-                    backgroundImage: studentProfile?.profilePicture != null
-                        ? NetworkImage(studentProfile!.profilePicture!)
-                        : null,
-                    child: studentProfile?.profilePicture == null
-                        ? const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Color(0xff264653),
+                  child:
+                  CircleAvatar(
+                    backgroundColor: Colors.deepPurple[100],
+                    radius: 60,
+                    child: studentProfile?.profilePicture != null &&
+                        studentProfile!.profilePicture!.isNotEmpty
+                        ? ClipOval(
+                      child: Image.network(
+                        studentProfile!.profilePicture!.startsWith('http')
+                            ? studentProfile!.profilePicture!
+                            : "http://192.168.1.78:5000/${studentProfile!.profilePicture!}",
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.person,
+                            color: Color(0xff323465),
+                            size: 50,
+                          );
+                        },
+                      ),
                     )
-                        : null,
+                        : const Icon(
+                      Icons.person,
+                      color: Color(0xff323465),
+                      size: 50,
+                    ),
                   ),
+
                 ),
                 Text(
                   studentProfile?.fullName ?? 'N/A',
@@ -147,6 +169,7 @@ class _StProfileState extends State<StProfile> {
                     color: Colors.white70,
                   ),
                 ),
+                SizedBox(height: 5,),
                 const Divider(color: Colors.white70, thickness: 0.5),
                 // Student Details
                 Card(

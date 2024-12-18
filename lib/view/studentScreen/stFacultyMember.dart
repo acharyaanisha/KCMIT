@@ -31,25 +31,27 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
           'Content-Type': 'application/json',
         },
       );
-      print("Response: ${response.body}");
+      // print("Response: ${response.body}");
 
       if (response.statusCode == 200) {
         final jsonResponse =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           memberList = jsonResponse['faculties'];
-          errorMessage = '';
+
+          print("Member: $memberList");
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load data.';
+        errorMessage = 'assets/no_data.png';
         isLoading = false;
       });
     }
@@ -69,11 +71,21 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
           ),
         ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : errorMessage.isNotEmpty
-          ? Center(child: Text(errorMessage))
-          : Padding(
+      body:
+      isLoading
+          ? Padding(
+        padding: const EdgeInsets.all(100.0),
+        child: const Center(child: CircularProgressIndicator()),
+      )
+          : memberList.isEmpty
+          ? Center(
+        child: errorMessage.isNotEmpty
+            ? (errorMessage.contains('no_data.png')
+            ? Image.asset(errorMessage)
+            : Image.asset(errorMessage))
+            : Image.asset(errorMessage),
+      )   :
+      Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
           itemCount: memberList.length,

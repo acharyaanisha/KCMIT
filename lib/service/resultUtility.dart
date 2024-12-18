@@ -44,8 +44,14 @@ class Utility {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              height: 90,
-              width: 90,
+              height: MediaQuery
+                  .of(context)
+                  .size
+                  .height * 0.10,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.18,
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(10),

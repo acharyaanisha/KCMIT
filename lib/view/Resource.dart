@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:kcmit/service/config.dart';
@@ -20,11 +21,41 @@ class _ResourceState extends State<Resource> {
   bool isDownloading = false;
   String downloadProgress = '';
   List<bool> _isExpandedList = [];
+  String message = '';
 
   @override
   void initState() {
     super.initState();
     fetchResourceData();
+    checkConnection();
+  }
+
+
+  Future<void> checkConnection() async {
+    ConnectivityResult connectivityResult = (await Connectivity().checkConnectivity()) as ConnectivityResult;
+    if (connectivityResult == ConnectivityResult.wifi) {
+
+      try {
+        final result = await InternetAddress.lookup('example.com');
+        if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+          setState(() {
+            message =  'assets/no_internet.png';
+          });
+        } else {
+          setState(() {
+            message =  'assets/no_internet.png';
+          });
+        }
+      } on SocketException catch (_) {
+        setState(() {
+          message = 'assets/no_internet.png';
+        });
+      }
+    } else {
+      setState(() {
+        message = 'assets/no_internet.png';
+      });
+    }
   }
 
   Future<void> fetchResourceData() async {
@@ -44,18 +75,18 @@ class _ResourceState extends State<Resource> {
         setState(() {
           resourceData = jsonResponse['resources'];
           _isExpandedList = List.filled(resourceData.length, false);
-          errorMessage = '';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load resources.';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
-        errorMessage = 'Failed to load data.';
+        errorMessage = 'assets/no_data.png';
         isLoading = false;
       });
     }
@@ -199,128 +230,133 @@ class _ResourceState extends State<Resource> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          if (isLoading)
-            Center(child: const CircularProgressIndicator()),
-          if (errorMessage.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
-            ),
-          if (!isLoading && resourceData.isNotEmpty)
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: ListView.builder(
-                  itemCount: resourceData.length,
-                  itemBuilder: (context, index) {
-                    final resource = resourceData[index];
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          _isExpandedList[index] = !_isExpandedList[index];
-                        });
-                      },
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 4.0,
-                        margin: const EdgeInsets.all(10.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                resource['title'] ?? 'No Title',
-                                style: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+      body: isLoading
+          ? Padding(
+        padding: const EdgeInsets.all(100.0),
+        child: const Center(child: CircularProgressIndicator()),
+      )
+          : resourceData.isEmpty
+          ? Center(
+        child: errorMessage.isNotEmpty
+            ? (errorMessage.contains('no_data.png')
+            ? Image.asset(errorMessage)
+            : Image.asset(errorMessage))
+            : Image.asset(errorMessage),
+      ):
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: ListView.builder(
+                    itemCount: resourceData.length,
+                    itemBuilder: (context, index) {
+                      final resource = resourceData[index];
+                      return InkWell(
+                        onTap: () {
+                          setState(() {
+                            _isExpandedList[index] = !_isExpandedList[index];
+                          });
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          elevation: 4.0,
+                          margin: const EdgeInsets.all(10.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  resource['title'] ?? 'No Title',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  const Icon(Icons.label_important_outline),
-                                  Text(
-                                    resource['tags'] ?? 'No Tags',
-                                    style: const TextStyle(fontSize: 15),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _isExpandedList[index]
-                                    ? resource['desc']
-                                    : resource['desc'],
-                                maxLines: _isExpandedList[index] ? null : 2,
-                                overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(height: 16),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {
-                                        final fileUrl =
-                                            "http://46.250.248.179:5000/${resource['url']}";
-                                        print("URL: $fileUrl");
-                                        _openPDF(fileUrl, resource['title']);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xff323465),
-                                      ),
-                                      icon: const Icon(
-                                        Icons.picture_as_pdf_outlined,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
-                                      label: const Text(
-                                        'View',
-                                        style: TextStyle(fontSize: 15, color: Colors.white),
-                                      ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.label_important_outline),
+                                    Text(
+                                      resource['tags'] ?? 'No Tags',
+                                      style: const TextStyle(fontSize: 15),
                                     ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: ElevatedButton.icon(
-                                      onPressed: () {
-                                        final fileUrl =
-                                            "http://46.250.248.179:5000/${resource['url']}";
-                                        final customPath =
-                                            "/storage/emulated/0/Download/${resource['url']}";
-                                        print('Download URL: $fileUrl');
-                                        downloadPdf(fileUrl, customPath);
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xff323465),
-                                      ),
-                                      icon: const Icon(
-                                        Icons.file_download_outlined,
-                                        size: 18,
-                                        color: Colors.white,
-                                      ),
-                                      label: const Text('Download',
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  _isExpandedList[index]
+                                      ? resource['desc']
+                                      : resource['desc'],
+                                  maxLines: _isExpandedList[index] ? null : 2,
+                                  overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 16),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          final fileUrl =
+                                              "http://46.250.248.179:5000/${resource['url']}";
+                                          print("URL: $fileUrl");
+                                          _openPDF(fileUrl, resource['title']);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xff323465),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.picture_as_pdf_outlined,
+                                          size: 18,
+                                          color: Colors.white,
+                                        ),
+                                        label: const Text(
+                                          'View',
                                           style: TextStyle(fontSize: 15, color: Colors.white),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                                ],
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: ElevatedButton.icon(
+                                        onPressed: () {
+                                          final fileUrl =
+                                              "http://46.250.248.179:5000/${resource['url']}";
+                                          final customPath =
+                                              "/storage/emulated/0/Download/${resource['url']}";
+                                          print('Download URL: $fileUrl');
+                                          downloadPdf(fileUrl, customPath);
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: const Color(0xff323465),
+                                        ),
+                                        icon: const Icon(
+                                          Icons.file_download_outlined,
+                                          size: 18,
+                                          color: Colors.white,
+                                        ),
+                                        label: const Text('Download',
+                                            style: TextStyle(fontSize: 15, color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                  ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-        ],
-      ),
+
+
+      //   ),
+      // ),
     );
   }
 }

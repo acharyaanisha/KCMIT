@@ -35,6 +35,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+
             CalendarDatePicker(
               initialDate: DateTime.now(),
               firstDate: DateTime(2000),
@@ -42,38 +43,38 @@ class _CalendarScreenState extends State<CalendarScreen> {
               onDateChanged: onDateChanged,
             ),
 
-            // Container(
-            //   height: 385,
-            //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            //   child: FlutterBSADCalendar(
-            //     initialDate: DateTime.now(),
-            //     firstDate: DateTime(1990),
-            //     lastDate: DateTime(2090),
-            //     onMonthChanged: (date, events) {
-            //       setState(() {
-            //         selectedDate = date;
-            //       });
-            //     },
-            //     onDateSelected: (date, events) {
-            //       setState(() {
-            //         selectedDate = date;
-            //       });
-            //     },
-            //     todayDecoration: BoxDecoration(
-            //       borderRadius: BorderRadius.all(Radius.circular(2)),
-            //       border: Border.all(color: Color(0xff323465)),
-            //       color: Color(0xff323465).withOpacity(0.3),
-            //     ),
-            //     selectedDayDecoration: BoxDecoration(
-            //       borderRadius: BorderRadius.all(Radius.circular(2)),
-            //       border: Border.all(color: Colors.black),
-            //       color: Color(0xff323465),
-            //     ),
-            //     weekendDays: const [DateTime.saturday],
-            //     holidayColor: Colors.red,
-            //     eventColor: Colors.blue,
-            //   ),
-            // ),
+        // Container(
+        //   height: 385,
+        //   margin: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        //   child: FlutterBSADCalendar(
+        //     initialDate: DateTime.now(),
+        //     firstDate: DateTime(1990),
+        //     lastDate: DateTime(2090),
+        //     onMonthChanged: (date, events) {
+        //       setState(() {
+        //         selectedDate = date;
+        //       });
+        //     },
+        //     onDateSelected: (date, events) {
+        //       setState(() {
+        //         selectedDate = date;
+        //       });
+        //     },
+        //     todayDecoration: BoxDecoration(
+        //       borderRadius: BorderRadius.all(Radius.circular(2)),
+        //       border: Border.all(color: Colors.blueAccent),
+        //       color: Colors.lightBlue.withOpacity(0.3),
+        //     ),
+        //     selectedDayDecoration: BoxDecoration(
+        //       borderRadius: BorderRadius.all(Radius.circular(2)),
+        //       border: Border.all(color: Colors.black),
+        //       color: Color(0xff456b9d),
+        //     ),
+        //     weekendDays: const [DateTime.saturday],
+        //     holidayColor: Colors.red,
+        //     eventColor: Colors.blue,
+        //   ),
+        // ),
 
           ],
         ),

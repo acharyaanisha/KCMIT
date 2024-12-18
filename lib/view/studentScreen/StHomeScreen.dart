@@ -25,25 +25,6 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
   List<dynamic> noticeList = [];
   String errorMessage = '';
   bool isLoading = true;
-  int _currentIndex = 0;
-
-  // void _onItemTapped(int index) {
-  //   setState(() {
-  //     _currentIndex = index;
-  //   });
-  //
-  //   if (_currentIndex == 1) {
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (_) => GalleryScreen()),
-  //     );
-  //   } else if (_currentIndex == 2) {
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(builder: (_) => StudentMenu()),
-  //     );
-  //   }
-  // }
 
   @override
   void initState() {
@@ -209,13 +190,15 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
                       ],
                     ),
                     SizedBox(height: 20,),
-                    Container(
-                        child: Row(
-                          children: [
-                            Section2(title: "Latest Notices"),
-                          ],
-                        )
-                    ),
+
+                    // Container(
+                    //     child: Row(
+                    //       children: [
+                    //         Section2(title: "Latest Notices"),
+                    //       ],
+                    //     )
+                    // ),
+
                     // Padding(
                     //   padding: const EdgeInsets.only(left: 20.0, top: 15.0,bottom: 15),
                     //   child: Container(
@@ -231,6 +214,7 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
                     //     ),
                     //   ),
                     // ),
+
                   ],
                 ),
               ),

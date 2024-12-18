@@ -154,8 +154,6 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
               label: 'Your Password',
               isPassword: true,
             ),
-            SizedBox(height: 20.0),
-            _buildLoginButton(),
             if (errorMessage != null)
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
@@ -172,6 +170,8 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
                   style: TextStyle(color: Colors.green, fontSize: 14),
                 ),
               ),
+            SizedBox(height: 20.0),
+            _buildLoginButton(),
             SizedBox(height: 10.0),
             _buildLoginAsStudent(),
             // _buildLoginAsParent(),

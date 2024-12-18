@@ -65,7 +65,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           routineData = jsonResponse['data'];
-          errorMessage = '';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
 
@@ -121,7 +121,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
       }
     } catch (e) {
       setState(() {
-        errorMessage = "assets/no_data.png";
+        errorMessage = 'assets/no_data.png';
         isLoading = false;
       });
     }
@@ -142,14 +142,17 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
         ),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
+          ? Padding(
+            padding: const EdgeInsets.all(100.0),
+            child: const Center(child: CircularProgressIndicator()),
+          )
           : routineData.isEmpty
           ? Center(
         child: errorMessage.isNotEmpty
             ? (errorMessage.contains('no_data.png')
             ? Image.asset(errorMessage)
-            : Text(errorMessage))
-            : Text('No routine data found.'),
+            : Image.asset(errorMessage))
+            : Image.asset(errorMessage),
       )
           : Padding(
         padding: const EdgeInsets.all(8.0),
@@ -231,7 +234,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
                       }),
                     )
                   else
-                    Text('No routine found for this day'),
+                    Image.asset(errorMessage),
                 ],
               ),
             )

@@ -3,10 +3,8 @@ import 'package:kcmit/view/Calendar.dart';
 import 'package:kcmit/view/studentScreen/StHomeScreen.dart';
 import 'package:kcmit/view/studentScreen/stMenuItem/stMenu.dart';
 
-
 class StHomeMain extends StatefulWidget {
-
-  const StHomeMain({Key? key,}) : super(key: key);
+  const StHomeMain({Key? key}) : super(key: key);
 
   @override
   State<StHomeMain> createState() => _StHomeMainState();
@@ -15,25 +13,37 @@ class StHomeMain extends StatefulWidget {
 class _StHomeMainState extends State<StHomeMain> {
   int _selectedIndex = 0;
 
+  // List of Pages
+  final List<Widget> _pages = [
+    StHomeScreen(),
+    CalendarScreen(),
+    StudentMenu(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_selectedIndex != 0) {
+      setState(() {
+        _selectedIndex = 0;
+      });
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      StHomeScreen(),
-      CalendarScreen(),
-      StudentMenu(),
-    ];
-
-    void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: Padding(
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: _pages[_selectedIndex],
+        bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(40),
-          // padding: const EdgeInsets.only(bottom: 50,left: 10,right: 10),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -56,7 +66,6 @@ class _StHomeMainState extends State<StHomeMain> {
               selectedItemColor: Colors.blue,
               unselectedItemColor: Colors.black,
               selectedIconTheme: IconThemeData(
-                // color: Color(0xff323465),
                 color: Colors.blue,
                 size: 30,
               ),
@@ -70,7 +79,7 @@ class _StHomeMainState extends State<StHomeMain> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.calendar_month_outlined,),
+                  icon: Icon(Icons.calendar_month_outlined),
                   label: 'Calendar',
                 ),
                 BottomNavigationBarItem(
@@ -81,6 +90,7 @@ class _StHomeMainState extends State<StHomeMain> {
             ),
           ),
         ),
-      );
+      ),
+    );
   }
 }

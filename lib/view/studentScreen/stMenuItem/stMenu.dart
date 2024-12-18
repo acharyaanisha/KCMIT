@@ -42,35 +42,40 @@ class _StudentMenuState extends State<StudentMenu> {
                   // "assets/result.png",
                   "Result",
                   StudentResult(),
-                    Colors.deepPurple.shade300
+                    Color(0xff474a8f)
+                    // Colors.deepPurple.shade300
                 ),
                 IconAndText(
                   Icons.settings_outlined,
                   // "assets/setting.png",
                   "Setting",
                   StudentSetting(),
-                    Colors.deepPurple.shade300
+                    Color(0xff474a8f)
+                    // Colors.deepPurple.shade300
                 ),
                 IconAndText(
                   Icons.assignment_add,
                   // "assets/exam.png",
                   "Exam",
                     StudentResut(),
-                    Colors.deepPurple.shade300
+                    // Colors.deepPurple.shade300
+                    Color(0xff474a8f)
                 ),
                 IconAndText(
                   Icons.contact_phone_outlined,
                   // "assets/contact.png",
                   "Contact",
                   Contact(),
-                    Colors.deepPurple.shade300
+                    Color(0xff474a8f)
+                    // Colors.deepPurple.shade300
                 ),
                 IconAndText(
                   Icons.timer,
                   // "assets/routine.png",
                   "Routine",
                   StRoutineScreen(),
-                    Colors.deepPurple.shade300
+                    Color(0xff474a8f)
+                    // Colors.deepPurple.shade300
 
                 ),
               ],

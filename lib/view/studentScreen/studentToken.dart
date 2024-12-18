@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -7,6 +8,28 @@ class studentTokenProvider with ChangeNotifier {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   String? get token => _token;
+
+
+  String? getRoleFromToken(String token) {
+    _token = token;
+    final parts = _token?.split('.');
+    if (parts?.length != 3) {
+      throw Exception("Invalid token");
+    }
+
+    final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts![1])));
+    final payloadMap = json.decode(payload);
+
+    print("Payload:Payload:$payload");
+    print("Payload:Payload:$payloadMap");
+
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception("Invalid payload");
+    }
+
+    return payloadMap['role'];
+  }
+
 
   Future<void> setToken(String token) async {
     _token = token;
@@ -26,11 +49,23 @@ class studentTokenProvider with ChangeNotifier {
     }
   }
 
+  // Future<void> loadToken() async {
+  //   _token = await _storage.read(key: 'jwt_token');
+  //   _checkTokenExpiry();
+  //   notifyListeners();
+  // }
+
+
   Future<void> loadToken() async {
     _token = await _storage.read(key: 'jwt_token');
-    _checkTokenExpiry();
-    notifyListeners();
+    if (_token != null && JwtDecoder.isExpired(_token!)) {
+      print("Token has expired. Logging out...");
+      _logout();
+    } else {
+      notifyListeners();
+    }
   }
+
 
   void _logout() {
     _token = null;

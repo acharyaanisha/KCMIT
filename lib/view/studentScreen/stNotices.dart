@@ -49,7 +49,7 @@ class _StudentNoticesState extends State<StudentNotices> {
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'assets/no_data.png';
           isLoading = false;
         });
       }
@@ -77,7 +77,18 @@ class _StudentNoticesState extends State<StudentNotices> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: Center(
+          child: Column(
+              children: [
+              if (isLoading)
+          Center(child: const CircularProgressIndicator()),
+    if (errorMessage.isNotEmpty)
+    Padding(
+    padding: const EdgeInsets.only(top: 150.0),
+    child: Image.asset(errorMessage),
+    // child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
+    ),
+    if (!isLoading && noticeList.isNotEmpty)SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(
@@ -189,6 +200,9 @@ class _StudentNoticesState extends State<StudentNotices> {
           ],
         ),
       ),
+    ]
+    ),
+      )
     );
   }
 
