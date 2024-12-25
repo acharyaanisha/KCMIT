@@ -62,7 +62,31 @@ class _StudentNoticesState extends State<StudentNotices> {
     }
   }
 
-  @override
+  void _showImageDialog(String fileUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: InteractiveViewer(
+            boundaryMargin: const EdgeInsets.all(20.0),
+            minScale: 1.0,
+            maxScale: 5.0,
+            child: Image.network(
+              fileUrl.startsWith('http')
+                  ? fileUrl
+                  : "http://46.250.248.179:5000/$fileUrl",
+              fit: BoxFit.contain,
+              height: MediaQuery.of(context).size.height*0.5,
+              width: MediaQuery.of(context).size.width*0.5,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,7 +108,7 @@ class _StudentNoticesState extends State<StudentNotices> {
           Center(child: const CircularProgressIndicator()),
     if (errorMessage.isNotEmpty)
     Padding(
-    padding: const EdgeInsets.only(top: 150.0),
+    padding: const EdgeInsets.only(top: 130.0),
     child: Image.asset(errorMessage),
     // child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
     ),
@@ -102,19 +126,13 @@ class _StudentNoticesState extends State<StudentNotices> {
                       setState(() {
                         _isExpandedList[index] = !_isExpandedList[index];
                       });
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => NoticeDetail(noticeItem: noticeItem),
-                      //   ),
-                      // );
                     },
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding:  EdgeInsets.symmetric(vertical: 0.0,horizontal: 10.0),
                       child: Card(
-                        color: Colors.white,
+                        color: Colors.grey.shade50,
                         margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        elevation: 5,
+                        elevation: 2,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15),
                         ),
@@ -128,12 +146,14 @@ class _StudentNoticesState extends State<StudentNotices> {
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
+                                  color: Colors.black
                                 ),
                               ),
                               SizedBox(height: 5,),
                               Row(
                                 children: [
-                                  Icon(Icons.timer_outlined),
+                                  Icon(Icons.timer_outlined, size: 17,),
+                                  SizedBox(width: 5,),
                                   Text(
                                     noticeItem['date'],
                                     style: TextStyle(
@@ -143,51 +163,52 @@ class _StudentNoticesState extends State<StudentNotices> {
                                 ],
                               ),
                               SizedBox(height: 5),
-                              // Text(
-                              //   noticeItem['desc'],
-                              //   style: TextStyle(
-                              //     fontSize: 15,
-                              //   ),
-                              //   overflow: TextOverflow.ellipsis,
-                              //     maxLines: 2,
-                              // ),
                               Text(
                                 _isExpandedList[index]
                                     ? noticeItem['desc']
                                     : noticeItem['desc'],
                                 maxLines: _isExpandedList[index] ? null : 2,
                                 overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  color: Colors.black
+                                ),
+
                               ),
 
                               SizedBox(height: 5,),
                               _isExpandedList[index]?Row(
                                 children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: Image.network(
-                                      noticeItem['fileURL'] != null && noticeItem['fileURL'].startsWith('http')
-                                          ? noticeItem['fileURL']
-                                          : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
-                                      width: 250,
-                                      height: 250,
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Icon(
-                                          Icons.broken_image,
-                                          color: Colors.grey,
-                                          size: 50,
-                                        );
-                                      },
+                                  GestureDetector(
+                                    onTap:(){
+                                      _showImageDialog(noticeItem['fileURL']);
+                                    },
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      child: Image.network(
+                                        noticeItem['fileURL'] != null && noticeItem['fileURL'].startsWith('http')
+                                            ? noticeItem['fileURL']
+                                            : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
+                                        width: 330,
+                                        // height: 350,
+                                        fit: BoxFit.contain,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Icon(
+                                            Icons.broken_image,
+                                            color: Colors.grey,
+                                            size: 50,
+                                          );
+                                        },
+                                      ),
                                     ),
                                   ),
                                 ],
-                              ):Text(
+                              ):
+                              Text(
                                 "",
                                 style: TextStyle(
-                                  fontSize: 15,
+                                  fontSize: 0,
                                 ),
                               ) ,
-                              SizedBox(height: 5),
                             ],
                           ),
                         ),

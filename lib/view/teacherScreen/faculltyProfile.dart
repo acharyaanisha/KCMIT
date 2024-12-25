@@ -1,12 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:kcmit/model/profileModel/facultyProfileModel.dart';
-import 'package:kcmit/model/profileModel/parentProfile.dart';
 import 'package:kcmit/service/config.dart';
-import 'package:kcmit/view/parentScreen/parentTokenProvider.dart';
 import 'package:kcmit/view/teacherScreen/facultyToken.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FacultyProfileScreen extends StatefulWidget {
   const FacultyProfileScreen({super.key});
@@ -37,10 +36,12 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
           'Authorization': 'Bearer $token',
         },
       );
-      print("Response: ${response.body}");
+      print("Token: $token");
+      print("Response Status: ${response.statusCode}");
+      print("Response Body: ${response.body}");
       if (response.statusCode == 200) {
-        final jsonResponse =
-        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        print("Decoded Response: $jsonResponse");
         setState(() {
           facultyProfile = FacultyProfile.fromJson(jsonResponse['data']);
           errorMessage = '';
@@ -48,17 +49,20 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'Failed to load user data. Status: ${response.statusCode}';
           isLoading = false;
         });
       }
     } catch (e) {
+      print("Error: $e");
       setState(() {
         errorMessage = 'Failed to load data.';
         isLoading = false;
       });
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -115,36 +119,37 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             children: [
-              Card(
-                elevation: 8,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                color: Colors.white,
-                child: Padding(
+              // Card(
+              //   elevation: 8,
+              //   shape: RoundedRectangleBorder(
+              //     borderRadius: BorderRadius.circular(20),
+              //   ),
+              //   color: Colors.white,
+              //   child:
+                Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       CircleAvatar(
                         backgroundColor: Colors.deepPurple[100],
-                        radius: 50,
-                        child: facultyProfile?.profile_pic!= null &&
-                            facultyProfile!.profile_pic.isNotEmpty
+                        radius: 60,
+                        child: facultyProfile?.profile_pic != null &&
+                            facultyProfile!.profile_pic!.isNotEmpty
                             ? ClipOval(
                           child: Image.network(
-                            facultyProfile!.profile_pic
-                                .startsWith('http')
-                                ? facultyProfile!.profile_pic
-                                : "http://46.250.248.179:5000/${facultyProfile!.profile_pic}",
+                            facultyProfile!.profile_pic!.startsWith('http')
+                                ? facultyProfile!.profile_pic!
+                                : "http://192.168.1.78:5000/${facultyProfile!.profile_pic!}",
                             width: 150,
                             height: 150,
                             fit: BoxFit.cover,
-                            errorBuilder:
-                                (context, error, stackTrace) {
-                              return const Icon(Icons.person,
-                                  color: Color(0xff323465),
-                                  size: 50);
+                            errorBuilder: (context, error, stackTrace) {
+                              return const Icon(
+                                Icons.person,
+                                color: Color(0xff323465),
+                                size: 50,
+                              );
                             },
                           ),
                         )
@@ -169,7 +174,7 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
                         label: facultyProfile?.qualification ?? 'N/A',
                       ),
                       InfoRow(
-                        icon: Icons.cast_for_education_outlined,
+                        icon: Icons.psychology_outlined,
                         label: facultyProfile?.specialization ?? 'N/A',
                       ),
                       InfoRow(
@@ -177,13 +182,13 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
                         label: facultyProfile?.mobileNumber ?? 'N/A',
                       ),
                       InfoRow(
-                        icon: Icons.email,
+                        icon: Icons.email_outlined,
                         label: facultyProfile?.email ?? 'N/A',
                       ),
                     ],
                   ),
                 ),
-              ),
+              // ),
             ],
           ),
         ),

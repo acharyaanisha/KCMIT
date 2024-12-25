@@ -208,23 +208,25 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
                         return Padding(
                           padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                           child: Card(
-                            color: Colors.white,
+                            color: Colors.grey.shade50,
                             // color: Color(0xffe8edef),
-                            elevation: 8,
-                            margin: const EdgeInsets.all(8.0),
+                            // boxShadow:[ BoxShadow( color: Color.fromRGBO(100, 100, 111, 0.2), blurRadius: 29, spreadRadius: 0 offset: Offset( 0, 7, ), ), ],
+                            elevation: 2,
+                            margin:  EdgeInsets.all(8.0),
+                              borderOnForeground:false,
                             child: ListTile(
                               leading: ClipRRect(
                                   borderRadius: const BorderRadius.vertical(
-                                    bottom: Radius.circular(30),
+                                    bottom: Radius.circular(0),
                                   ),
-                                  child: Icon(Icons.timer_outlined, size: 50)),
+                                  child: Icon(Icons.timer_outlined, size: 50,color:  Color(0xff323465),)),
                               title: Text('${routine['startTime']} - ${routine['endTime']}',
                                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(routine['subject'], style: TextStyle(fontSize: 15)),
-                                  Text('${routine['room']}', style: TextStyle(fontSize: 15)),
+                                  Text("${routine['subject']} (Room ${routine['room']})", style: TextStyle(fontSize: 15)),
+                                  // Text('${routine['room']}', style: TextStyle(fontSize: 15)),
                                   Text('${routine['faculty']}', style: TextStyle(fontSize: 15)),
                                 ],
                               ),

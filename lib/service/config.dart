@@ -1,9 +1,8 @@
 class Config{
 
   // static const String baseUrl = "http://46.250.248.179:5000";
-  // static const String baseUrl = "http://192.168.1.65:5000";
-  static const String baseUrl = "http://192.168.1.78:5000";
-  // static const String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
+  // static const String baseUrl = "http://192.168.1.78:5000";
+  static const String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
 
   //Authentication
   static const String _studentAuthenticateEndpoint = "api/authenticate/student";
@@ -78,7 +77,7 @@ class Config{
   static String getStudentView() => '$baseUrl/$_studentViewEndpoint';
 
   //Exam List
-  static const String _examListEndpoint = "api/exam/list";
+  static const String _examListEndpoint = "api/result/student/exam";
 
   static String getExamList() => '$baseUrl/$_examListEndpoint';
 
@@ -86,4 +85,14 @@ class Config{
   static const String _stuploadProfileEndpoint = "api/student/uploadProfilePicture";
 
   static String getStUploadProfile() => '$baseUrl/$_stuploadProfileEndpoint';
+
+  //Events
+  static const String _eventEndpoint = "api/event/list";
+
+  static String getEvent() => '$baseUrl/$_eventEndpoint';
+
+  // Result View Student
+  static const String _resultEndpoint = "api/result/student/view";
+
+  static String getResult() => '$baseUrl/$_resultEndpoint';
 }

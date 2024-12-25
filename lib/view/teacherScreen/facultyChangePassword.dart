@@ -122,16 +122,25 @@ class _FacultyChangePasswordState extends State<FacultyChangePassword> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Old password field
+            Text(
+              "Old Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: oldPasswordController,
               obscureText: !_isOldPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'Old Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isOldPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isOldPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -144,16 +153,25 @@ class _FacultyChangePasswordState extends State<FacultyChangePassword> {
             const SizedBox(height: 16),
 
             // New password field
+            Text(
+              "New Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: newPasswordController,
               obscureText: !_isNewPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'New Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_outline),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isNewPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isNewPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -166,16 +184,25 @@ class _FacultyChangePasswordState extends State<FacultyChangePassword> {
             const SizedBox(height: 16),
 
             // Confirm new password field
+            Text(
+              "Confirm New Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: confirmPasswordController,
               obscureText: !_isConfirmPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'Confirm New Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_reset),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isConfirmPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isConfirmPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -195,20 +222,29 @@ class _FacultyChangePasswordState extends State<FacultyChangePassword> {
             const SizedBox(height: 16),
 
             // Change Password Button
-            ElevatedButton(
-              onPressed: () {
-                authenticateUser(
-                  oldPasswordController.text,
-                  newPasswordController.text,
-                  confirmPasswordController.text,
-                );
-              },
-              child:  Text('Change Password',
-                style:TextStyle(color: Colors.white,fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Color(0xff323465),
+            Center(
+              child: SizedBox(
+                width: 200, // Adjust width here
+                child: ElevatedButton(
+                  onPressed: () {
+                    authenticateUser(
+                      oldPasswordController.text,
+                      newPasswordController.text,
+                      confirmPasswordController.text,
+                    );
+                  },
+                  child: Text(
+                    'Change Password',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Color(0xff323465),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

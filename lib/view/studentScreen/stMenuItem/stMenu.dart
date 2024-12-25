@@ -19,10 +19,10 @@ class _StudentMenuState extends State<StudentMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:  Size.fromHeight(100),
+        preferredSize:  Size.fromHeight(70),
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(
-            bottom: Radius.circular(40),
+            bottom: Radius.circular(30),
           ),
           child: AppBar(
            title: Text("Menu"),
@@ -80,7 +80,6 @@ class _StudentMenuState extends State<StudentMenu> {
                 ),
               ],
             ),
-            SizedBox(height: 30,),
           ],
         ),
       ),

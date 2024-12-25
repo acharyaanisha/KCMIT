@@ -31,7 +31,7 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
           'Content-Type': 'application/json',
         },
       );
-      // print("Response: ${response.body}");
+      print("Response: ${response.body}");
 
       if (response.statusCode == 200) {
         final jsonResponse =
@@ -56,6 +56,98 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
       });
     }
   }
+
+  void _showDialog(String imageUrl, String name, String email, String mobileNumber, String qualification, String specialization) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.network(
+                  imageUrl.startsWith('http')
+                      ? imageUrl
+                      : "http://kcmit-api.kcmit.edu.np/$imageUrl",
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const Icon(Icons.cast_for_education_outlined),
+                    const SizedBox(width: 8),
+                    Text(
+                      qualification,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  specialization,
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const Divider(height: 15, color: Colors.grey),
+                Row(
+                  children: [
+                    const Icon(Icons.phone, color: Colors.grey, size: 20),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        launch("tel:$mobileNumber");
+                      },
+                      child: Text(
+                        mobileNumber,
+                        style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Icon(Icons.email, color: Colors.grey, size: 20),
+                    const SizedBox(width: 8),
+                    TextButton(
+                      onPressed: () {
+                        launch("mailto:$email");
+                      },
+                      child: Text(
+                        email,
+                        style: const TextStyle(fontSize: 14, color: Colors.black87),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -87,115 +179,57 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
       )   :
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: ListView.builder(
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+          ),
           itemCount: memberList.length,
           itemBuilder: (context, index) {
             final member = memberList[index];
-            return Card(
-              color: Colors.white,
-              elevation: 5,
-              margin: const EdgeInsets.symmetric(
-                  horizontal: 10, vertical: 10),
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            return GestureDetector(
+              onTap: (){_showDialog(member['profile_pic'],member['name'],member['email'],member['mobileNumber'],member['qualification'],member['specialization']);},
+
+              child: Card(
+                color: Colors.grey.shade50,
+                elevation: 5,
+                child: Stack(
                   children: [
-
-                    CircleAvatar(
-                      backgroundColor: Colors.deepPurple[100],
-                      radius: 50,
-                      child: member['profile_pic'] != null &&
-                          member['profile_pic'].isNotEmpty
-                          ? ClipOval(
-                        child: Image.network(
-                          member['profile_pic']
-                              .startsWith('http')
-                              ? member['profile_pic']
-                              : "http://46.250.248.179:5000/${member['profile_pic']}",
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                          errorBuilder:
-                              (context, error, stackTrace) {
-                            return const Icon(Icons.person,
-                                color: Color(0xff323465),
-                                size: 50);
-                          },
-                        ),
-                      )
-                          : const Icon(
-                        Icons.person,
-                        color: Color(0xff323465),
-                        size: 50,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(15.0),
+                      child: Image.network(
+                        member['profile_pic'].startsWith('http')
+                            ? member['profile_pic']
+                            : "http://kcmit-api.kcmit.edu.np/${member['profile_pic']}",
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
                       ),
                     ),
-                    const SizedBox(height: 10),
-
-                    Text(
-                      member['name'] ?? 'N/A',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                        decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: Text(
+                         member['name'],
+                          style: const TextStyle(
+                            fontSize: 15.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                         Icon(Icons.cast_for_education_outlined),
-                         SizedBox(width: 8),
-                        Text(
-                          member['qualification'] ?? 'N/A',
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ],
-                    ),
-                     SizedBox(height: 5),
-
-                    Text(
-                      member['specialization'] ?? 'N/A',
-                      style:  TextStyle(fontSize: 16),
-                    ),
-                     Divider(height: 15, color: Colors.grey),
-
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                      children: [
-                         Icon(Icons.phone,
-                             color: Colors.grey, size: 20),
-                         SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            launch("tel:${member['mobileNumber']}");
-                          },
-                          child: Text(
-                            member['mobileNumber'],
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black87),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Row(
-                        mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Icon(Icons.email,
-                            color: Colors.grey, size: 20),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            launch("mailto:${member['email']}");
-                          },
-                          child: Text(
-                            member['email'],
-                            style: const TextStyle(
-                                fontSize: 14, color: Colors.black87),
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),

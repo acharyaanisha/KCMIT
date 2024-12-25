@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       SizedBox(height: 15,),
                       Text("KCMIT-A Pioneer BIM College of Kathmandu",style: TextStyle(
-                        fontSize: 20,
+                        fontSize: MediaQuery.of(context).size.width * 0.05,
                         fontWeight: FontWeight.bold,
                         // fontFamily: f
                       ),
@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       SizedBox(height: 20,),
                       Text("Leading college in Kathmandu offering Bachelor of Information Management(BIM), Business Administration (BBA), and Computer Application(BCA)-top education in Nepal",style: TextStyle(
-                        fontSize: 14,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                         textAlign: TextAlign.center,
                       ),
@@ -122,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Text(
           'Login as Faculty',
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: TextStyle(color: Colors.white, fontSize: MediaQuery.of(context).size.width * 0.04),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xff323465),
@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Text(
           'Login as Student',
-          style: TextStyle(color: Color(0xdd3a3a72), fontSize: 15),
+          style: TextStyle(color: Color(0xdd3a3a72), fontSize: MediaQuery.of(context).size.width * 0.04),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: Colors.white,
@@ -174,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
         },
         child: Text(
           'Login as Parent',
-          style: TextStyle(color: Colors.white, fontSize: 15),
+          style: TextStyle(color: Colors.white,fontSize:MediaQuery.of(context).size.width * 0.5),
           // style: TextStyle(color: Color(0xff323465), fontSize: 15),
         ),
         style: ElevatedButton.styleFrom(

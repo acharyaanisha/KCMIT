@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:kcmit/model/changePasswordModel/studentChangePassword.dart';
@@ -15,7 +16,6 @@ class StudentChangePassword extends StatefulWidget {
 }
 
 class _StudentChangePasswordState extends State<StudentChangePassword> {
-
   late StChangePassword stChangePassword;
   String errorMessage = '';
   bool isLoading = true;
@@ -34,7 +34,8 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
     super.initState();
   }
 
-  Future<void> authenticateUser(String oldPassword, String newPassword, String confirmPassword) async {
+  Future<void> authenticateUser(
+      String oldPassword, String newPassword, String confirmPassword) async {
     if (oldPassword.isEmpty || newPassword.isEmpty || confirmPassword.isEmpty) {
       setState(() {
         errorMessage = 'Please fill in all fields.';
@@ -72,22 +73,21 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
 
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(response.body);
-          setState(() {
-            successMessage = 'Password changed successfully!';
-            errorMessage = '';
-            oldPasswordController.clear();
-            newPasswordController.clear();
-            confirmPasswordController.clear();
-          });
+        setState(() {
+          successMessage = 'Password changed successfully!';
+          errorMessage = '';
+          oldPasswordController.clear();
+          newPasswordController.clear();
+          confirmPasswordController.clear();
+        });
 
-          Future.delayed(const Duration(seconds: 1), () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) =>  LoginAsStudent()),
-            );
-          });
-        }
-       else {
+        Future.delayed(const Duration(seconds: 1), () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => LoginAsStudent()),
+          );
+        });
+      } else {
         setState(() {
           errorMessage = 'Failed to change password. Please try again.';
           successMessage = null;
@@ -121,16 +121,25 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Old password field
+            Text(
+              "Old Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: oldPasswordController,
               obscureText: !_isOldPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'Old Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isOldPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isOldPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -143,16 +152,25 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
             const SizedBox(height: 16),
 
             // New password field
+            Text(
+              "New Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: newPasswordController,
               obscureText: !_isNewPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'New Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_outline),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isNewPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isNewPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -165,16 +183,25 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
             const SizedBox(height: 16),
 
             // Confirm new password field
+            Text(
+              "Confirm New Password",
+              style: TextStyle(fontSize: 15),
+            ),
+            SizedBox(height: 2),
             TextField(
               controller: confirmPasswordController,
               obscureText: !_isConfirmPasswordVisible,
               decoration: InputDecoration(
-                labelText: 'Confirm New Password',
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock_reset),
+                contentPadding: EdgeInsets.symmetric(vertical: 10.0,horizontal: 10.0),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isConfirmPasswordVisible ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                    _isConfirmPasswordVisible
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                    color: Colors.grey.shade600,
                   ),
                   onPressed: () {
                     setState(() {
@@ -194,20 +221,29 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
             const SizedBox(height: 16),
 
             // Change Password Button
-            ElevatedButton(
-              onPressed: () {
-                authenticateUser(
-                  oldPasswordController.text,
-                  newPasswordController.text,
-                  confirmPasswordController.text,
-                );
-              },
-              child:  Text('Change Password',
-              style:TextStyle(color: Colors.white,fontSize: 16),
-              ),
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                backgroundColor: Color(0xff323465),
+            Center(
+              child: SizedBox(
+                width: 200, // Adjust width here
+                child: ElevatedButton(
+                  onPressed: () {
+                    authenticateUser(
+                      oldPasswordController.text,
+                      newPasswordController.text,
+                      confirmPasswordController.text,
+                    );
+                  },
+                  child: Text(
+                    'Change Password',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    backgroundColor: Color(0xff323465),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

@@ -43,7 +43,7 @@ class _StHomeMainState extends State<StHomeMain> {
       child: Scaffold(
         body: _pages[_selectedIndex],
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(40),
+          padding: const EdgeInsets.only(bottom: 30,left: 40,right: 40),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -64,13 +64,13 @@ class _StHomeMainState extends State<StHomeMain> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               selectedItemColor: Colors.blue,
-              unselectedItemColor: Colors.black,
+              unselectedItemColor:  Color(0xff323465),
               selectedIconTheme: IconThemeData(
                 color: Colors.blue,
                 size: 30,
               ),
               unselectedIconTheme: IconThemeData(
-                color: Colors.black,
+                color:  Color(0xff323465),
                 size: 25,
               ),
               items: const [
@@ -94,3 +94,5 @@ class _StHomeMainState extends State<StHomeMain> {
     );
   }
 }
+
+

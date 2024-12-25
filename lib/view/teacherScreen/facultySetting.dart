@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
-import 'package:kcmit/view/parentScreen/parentChangePassword.dart';
 import 'package:kcmit/view/Contact.dart';
+import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
 import 'package:kcmit/view/teacherScreen/facultyChangePassword.dart';
 
@@ -25,7 +25,6 @@ class _FacultySettingState extends State<FacultySetting> {
           child: AppBar(
             title: Text("Setting"),
             centerTitle: true,
-            automaticallyImplyLeading: false,
           ),
         ),
       ),
@@ -45,7 +44,7 @@ class _FacultySettingState extends State<FacultySetting> {
                   );
                 },
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
               _buildProfileButton(
                 label: "Privacy Policy ",
                 icon: Icons.privacy_tip_outlined,
@@ -56,10 +55,21 @@ class _FacultySettingState extends State<FacultySetting> {
                   );
                 },
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 20),
+              _buildProfileButton(
+                label: "Rate Us",
+                icon: Icons.star_border_outlined,
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Policy()),
+                  );
+                },
+              ),
+              SizedBox(height: 20),
               _buildProfileButton(
                 label: "Contact Us",
-                icon: Icons.contacts_outlined,
+                icon: Icons.phone,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -68,40 +78,64 @@ class _FacultySettingState extends State<FacultySetting> {
                 },
               ),
 
-              SizedBox(height: 40),
-              ElevatedButton.icon(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const LoginPage(),
+              SizedBox(height: 20),
+
+              TextButton(onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
+                  ),
+                );
+              },
+                child: Row(
+                  children: [
+                    Icon(Icons.logout,color: Color(0xffEE1B08),),
+                    SizedBox(width: 10,),
+                    Text("Log Out",
+                      style: TextStyle(
+                        color: Color(0xffEE1B08),
+                        fontSize: 15,
+                      ),
                     ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.logout,
-                  // Icons.logout,
-                  color: Colors.white,),
-                label: const Text("Log Out",
-                  style: TextStyle(
-                      color: Colors.white
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:  Colors.black,
-                  // backgroundColor:  Color(0xff323465),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 50,
-                    vertical: 3,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 16,
-                  ),
+                  ],
                 ),
               ),
+
+              // ElevatedButton.icon(
+              //   onPressed: () {
+              //     Navigator.pushReplacement(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => const LoginPage(),
+              //       ),
+              //     );
+              //   },
+              //   icon: const Icon(
+              //     Icons.logout,
+              //     // Icons.logout,
+              //     color: Color(0xffEE1B08),),
+              //   label: const Text("Log Out",
+              //     style: TextStyle(
+              //         color: Color(0xffEE1B08)
+              //     ),
+              //   ),
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor:  Colors.white,
+              //     // backgroundColor:  Color(0xff323465),
+              //     padding: const EdgeInsets.symmetric(
+              //       horizontal: 50,
+              //       vertical: 3,
+              //     ),
+              //     // shape: RoundedRectangleBorder(
+              //     //   borderRadius: BorderRadius.circular(50),
+              //     //   side: BorderSide.none,
+              //     // ),
+              //     textStyle: const TextStyle(
+              //       fontSize: 16,
+              //     ),
+              //   ),
+              // ),
 
             ],
           ),
@@ -124,7 +158,7 @@ class _FacultySettingState extends State<FacultySetting> {
           children: [
             Row(
               children: [
-                Icon(icon, color: Colors.black),
+                Icon(icon, color:  Color(0xff323465)),
                 const SizedBox(width: 10),
                 Text(
                   label,
@@ -135,7 +169,7 @@ class _FacultySettingState extends State<FacultySetting> {
                 ),
               ],
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.black, size: 15),
+            Icon(Icons.arrow_forward_ios, color:  Color(0xff323465), size: 15),
           ],
         ),
       ),

@@ -16,6 +16,14 @@ void main() async{
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
 
+
+
+  // context.read<studentTokenProvider>().setToken(token);
+  // context.read<studentTokenProvider>().getRoleFromToken(token);
+
+  // SharedPreferences prefs = await SharedPreferences.getInstance();
+  // await prefs.setString('token', token);
+
   runApp(
     MultiProvider(
         providers: [

@@ -5,7 +5,8 @@ class FacultyProfile {
   final String qualification;
   final String specialization;
   final String hireDate;
-  final String profile_pic;
+  final String? profile_pic;
+  final int faculty_category_id;
 
   FacultyProfile({
     required this.name,
@@ -14,7 +15,8 @@ class FacultyProfile {
     required this.qualification,
     required this.specialization,
     required this.hireDate,
-    required this.profile_pic,
+    this.profile_pic,
+    required this.faculty_category_id,
   });
 
   factory FacultyProfile.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class FacultyProfile {
       specialization: json['specialization'],
       hireDate: json['hire_date'],
       profile_pic: json['profile_pic'],
+      faculty_category_id: json['faculty_category_id'],
     );
   }
 
@@ -38,6 +41,7 @@ class FacultyProfile {
       'specialization': specialization,
       'hire_date': hireDate,
       'profile_pic': profile_pic,
+      'faculty_category_id': faculty_category_id,
     };
   }
 }

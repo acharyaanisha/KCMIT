@@ -68,7 +68,11 @@ class _StProfileState extends State<StProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(60),
+            preferredSize: Size.fromHeight(80),
+            child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(30),
+            ),
           child: AppBar(
             title: const Text('Student Profile'),
             centerTitle: true,
@@ -85,18 +89,18 @@ class _StProfileState extends State<StProfile> {
 
           ),
         ),
-      // ),
+      ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Color(0xff323465),
-              Color(0xffC82025),
-              ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   gradient: LinearGradient(
+        //     colors: [
+        //       Color(0xff323465),
+        //       Color(0xffC82025),
+        //       ],
+        //     begin: Alignment.topLeft,
+        //     end: Alignment.bottomRight,
+        //   ),
+        // ),
         child: isLoading
             ? const Center(
           child: CircularProgressIndicator(
@@ -115,7 +119,7 @@ class _StProfileState extends State<StProfile> {
         )
             : SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0,horizontal: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -158,7 +162,7 @@ class _StProfileState extends State<StProfile> {
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -166,18 +170,18 @@ class _StProfileState extends State<StProfile> {
                   studentProfile?.email ?? 'N/A',
                   style: const TextStyle(
                     fontSize: 16,
-                    color: Colors.white70,
+                    color: Colors.black,
                   ),
                 ),
                 SizedBox(height: 5,),
-                const Divider(color: Colors.white70, thickness: 0.5),
+                const Divider(color: Colors.black, thickness: 0.5),
                 // Student Details
                 Card(
                   elevation: 8,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  color: Colors.white,
+                  color: Colors.grey.shade50,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -188,7 +192,7 @@ class _StProfileState extends State<StProfile> {
                           value: studentProfile?.phoneNumber ?? 'N/A',
                         ),
                         _buildProfileTile(
-                          icon: Icons.calendar_today,
+                          icon: Icons.calendar_today_outlined,
                           title: 'Date of Birth',
                           value: studentProfile?.dateOfBirth ?? 'N/A',
                         ),
@@ -199,27 +203,27 @@ class _StProfileState extends State<StProfile> {
                         ),
 
                         _buildProfileTile(
-                          icon: Icons.home,
+                          icon: Icons.home_outlined,
                           title: 'Address',
                           value: studentProfile?.address ?? 'N/A',
                         ),
                         _buildProfileTile(
-                          icon: Icons.school,
+                          icon: Icons.school_outlined,
                           title: 'Program',
                           value: studentProfile?.enrolledProgramName ?? 'N/A',
                         ),
                         _buildProfileTile(
-                          icon: Icons.calendar_view_day,
+                          icon: Icons.check_box_outlined,
                           title: 'Batch',
                           value: studentProfile?.batch ?? 'N/A',
                         ),
                         _buildProfileTile(
-                          icon: Icons.date_range,
+                          icon: Icons.date_range_outlined,
                           title: 'Enrollment Date',
                           value: studentProfile?.enrollmentDate ?? 'N/A',
                         ),
                         _buildProfileTile(
-                          icon: Icons.book,
+                          icon: Icons.book_outlined,
                           title: 'Semester',
                           value: studentProfile?.enrolledSemesterName ?? 'N/A',
                         ),
@@ -245,14 +249,14 @@ class _StProfileState extends State<StProfile> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:  Color(0xffC82025),
+                    backgroundColor:   Color(0xff323465),
                     // backgroundColor:  Color(0xff323465),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 30,
-                      vertical: 15,
+                      vertical: 10,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     textStyle: const TextStyle(
                       fontSize: 16,
@@ -275,7 +279,7 @@ class _StProfileState extends State<StProfile> {
     return Column(
       children: [
         ListTile(
-          leading: Icon(icon, color: Color(0xff323465),),
+          leading: Icon(icon, color: Color(0xff323465),size: 25,),
           title: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.bold),

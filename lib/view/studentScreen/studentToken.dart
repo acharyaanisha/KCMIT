@@ -10,7 +10,27 @@ class studentTokenProvider with ChangeNotifier {
   String? get token => _token;
 
 
-  String? getRoleFromToken(String token) {
+  // String? getRoleFromToken(String token) {
+  //   _token = token;
+  //   final parts = _token?.split('.');
+  //   if (parts?.length != 3) {
+  //     throw Exception("Invalid token");
+  //   }
+  //
+  //   final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts![1])));
+  //   final payloadMap = json.decode(payload);
+  //
+  //   print("Payload:Payload:$payload");
+  //   print("Payload:Payload:$payloadMap");
+  //
+  //   if (payloadMap is! Map<String, dynamic>) {
+  //     throw Exception("Invalid payload");
+  //   }
+  //
+  //   return payloadMap['role'];
+  // }
+
+  Future<void> getRoleFromToken(String token) async{
     _token = token;
     final parts = _token?.split('.');
     if (parts?.length != 3) {
@@ -20,8 +40,8 @@ class studentTokenProvider with ChangeNotifier {
     final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts![1])));
     final payloadMap = json.decode(payload);
 
-    print("Payload:Payload:$payload");
-    print("Payload:Payload:$payloadMap");
+    // print("Payload:Payload:$payload");
+    // print("Payload:Payload:$payloadMap");
 
     if (payloadMap is! Map<String, dynamic>) {
       throw Exception("Invalid payload");
@@ -38,6 +58,9 @@ class studentTokenProvider with ChangeNotifier {
     } else {
       await _storage.delete(key: 'jwt_token');
     }
+
+    // print("Token: $token");
+
     _checkTokenExpiry();
     notifyListeners();
   }
@@ -48,13 +71,6 @@ class studentTokenProvider with ChangeNotifier {
       _logout();
     }
   }
-
-  // Future<void> loadToken() async {
-  //   _token = await _storage.read(key: 'jwt_token');
-  //   _checkTokenExpiry();
-  //   notifyListeners();
-  // }
-
 
   Future<void> loadToken() async {
     _token = await _storage.read(key: 'jwt_token');

@@ -20,11 +20,12 @@ class StHomeScreen extends StatefulWidget {
   State<StHomeScreen> createState() => _StHomeScreenState();
 }
 
-class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderStateMixin {
-
+class _StHomeScreenState extends State<StHomeScreen> {
   List<dynamic> noticeList = [];
   String errorMessage = '';
   bool isLoading = true;
+  List<bool> _isExpandedList = [];
+
 
   @override
   void initState() {
@@ -33,39 +34,57 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
   }
 
   Future<void> fetchNoticeList() async {
-    // final token = context.read<studentTokenProvider>().token;
     final url = Config.getStNotices();
     try {
       final response = await http.get(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': 'Bearer $token',
         },
       );
-      print("URL: $url");
-      print("Response: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           noticeList = jsonResponse['notices'];
-          errorMessage = '';
+          _isExpandedList = List.filled(noticeList.length, false);
           isLoading = false;
         });
       } else {
         setState(() {
-          errorMessage = 'Failed to load user data.';
+          errorMessage = 'Failed to load notices.';
           isLoading = false;
         });
       }
     } catch (e) {
       setState(() {
         errorMessage = 'Failed to load data.';
-        print("Error: $e");
         isLoading = false;
       });
     }
+  }
+
+  void _showImageDialog(String fileUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: InteractiveViewer(
+            boundaryMargin: const EdgeInsets.all(20.0),
+            minScale: 1.0,
+            maxScale: 5.0,
+            child: Image.network(
+              fileUrl.startsWith('http')
+                  ? fileUrl
+                  : "http://46.250.248.179:5000/$fileUrl",
+              fit: BoxFit.contain,
+              height: MediaQuery.of(context).size.height*0.5,
+              width: MediaQuery.of(context).size.width*0.5,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -74,31 +93,30 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
       length: 3,
       child: Scaffold(
         appBar: PreferredSize(
-        preferredSize:  Size.fromHeight(70),
-    child: ClipRRect(
-    borderRadius: const BorderRadius.vertical(
-    bottom: Radius.circular(30),
-    ),
-    child:AppBar(
-          title: Center(child: Text("KCMITians")),
-          automaticallyImplyLeading: false,
-          actions: [
-      IconButton(
-        icon: CircleAvatar(
-          radius: 40,
-          backgroundImage: AssetImage('assets/profile.png'),
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => StProfile()),
-          );
-
-        },
-      ),
-          ],
-        ),
-    ),
+          preferredSize: Size.fromHeight(70),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.vertical(
+              bottom: Radius.circular(30),
+            ),
+            child: AppBar(
+              title: Center(child: Text("KCMITians")),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  icon: CircleAvatar(
+                    radius: 40,
+                    backgroundImage: AssetImage('assets/profile.png'),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => StProfile()),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -139,83 +157,166 @@ class _StHomeScreenState extends State<StHomeScreen> with SingleTickerProviderSt
                 ),
               ),
               SizedBox(height: 10),
-              Container(
-                child: Column(
-                  children: [
-                    Section(
-                      title: "Quick Navigation",
-                      iconsAndTexts: [
-                        IconAndText(
-                          Icons.timer_outlined,
-                          // "assets/routine.png",
-                          "Routine",
-                          StRoutineScreen(),
-                            Colors.blue.shade300
+              Section(
+                title: "Quick Navigation",
+                iconsAndTexts: [
+                  IconAndText(
+                      Icons.timer_outlined, "Routine", StRoutineScreen(),
+                      Colors.blue.shade300),
+                  IconAndText(
+                      Icons.circle_notifications_outlined,
+                      "Notices",
+                      StudentNotices(),
+                      Colors.orange.shade300),
+                  IconAndText(
+                      Icons.download_for_offline_outlined,
+                      "Resources",
+                      Resource(),
+                      Colors.purple.shade300),
+                  IconAndText(
+                      Icons.calendar_month_outlined,
+                      "Calendar",
+                      CalendarScreen(),
+                      Colors.red.shade300),
+                  IconAndText(
+                      Icons.person,
+                      "Faculty",
+                      FacultyMemberList(),
+                      Colors.deepPurple.shade300),
+                  IconAndText(
+                      Icons.check_circle_outline,
+                      "Attendance",
+                      StudentAttendance(),
+                      Colors.amber.shade300),
+                ],
+              ),
+              SizedBox(height: 20,),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 15.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Latest Notices",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              SizedBox(
+                child: isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : noticeList.isEmpty
+                    ? Center(child: Text("No notices available."))
+                    : ListView.builder(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: noticeList.length,
+                  itemBuilder: (context, index) {
+                    final noticeItem = noticeList[index];
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _isExpandedList[index] =
+                          !_isExpandedList[index];
+                        });
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: 0.0, horizontal: 10.0),
+                        child: Card(
+                          color: Colors.grey.shade50,
+                          margin: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 5),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  noticeItem['title'],
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer_outlined,
+                                      size: 17,
+                                    ),
+                                    SizedBox(width: 5),
+                                    Text(
+                                      noticeItem['date'],
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                  _isExpandedList[index]
+                                      ? noticeItem['desc']
+                                      : noticeItem['desc'],
+                                  maxLines: _isExpandedList[index]
+                                      ? null
+                                      : 2,
+                                  overflow: _isExpandedList[index]
+                                      ? TextOverflow.visible
+                                      : TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                if (_isExpandedList[index])
+                                  Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap:(){
+                                          _showImageDialog(noticeItem['fileURL']);
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              8.0),
+                                          child: Image.network(
+                                            noticeItem['fileURL'] !=
+                                                null &&
+                                                noticeItem[
+                                                'fileURL']
+                                                    .startsWith(
+                                                    'http')
+                                                ? noticeItem['fileURL']
+                                                : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
+                                            width: MediaQuery.of(context).size.width * 0.85,
+                                            // height: 250,
+                                            fit: BoxFit.contain,
+                                            errorBuilder: (context,
+                                                error, stackTrace) {
+                                              return Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey,
+                                                size: 50,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                              ],
+                            ),
+                          ),
                         ),
-                        IconAndText(
-                          Icons.circle_notifications_outlined,
-                          // "assets/notice.png",
-                          "Notices",
-                          StudentNotices(),
-                            Colors.orange.shade300
-                        ),
-                        IconAndText(
-                          Icons.download_for_offline_outlined,
-                          // "assets/resource.png",
-                          "Resources",
-                            Resource(),
-                            Colors.purple.shade300
-                        ),
-                        IconAndText(
-                          // "assets/calendar.png",
-                          Icons.calendar_month_outlined,
-                          "Calender",
-                          CalendarScreen(),
-                            Colors.red.shade300
-                        ),
-                        IconAndText(
-                          Icons.person,
-                          // "assets/faculty1.png",
-                          "Faculty",
-                          FacultyMemberList(),
-                            Colors.deepPurple.shade300
-                        ),
-                        IconAndText(
-                          Icons.check_circle_outline,
-                          // "assets/attendance.png",
-                          "Attendance",
-                          StudentAttendance(),
-                            Colors.amber.shade300
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20,),
-
-                    // Container(
-                    //     child: Row(
-                    //       children: [
-                    //         Section2(title: "Latest Notices"),
-                    //       ],
-                    //     )
-                    // ),
-
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 20.0, top: 15.0,bottom: 15),
-                    //   child: Container(
-                    //     child: Column(
-                    //       children: [
-                    //         Text("Latest Notices",
-                    //         style: TextStyle(
-                    //           fontWeight: FontWeight.bold
-                    //         ),
-                    //         textAlign: TextAlign.start,
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-
-                  ],
+                      ),
+                    );
+                  },
                 ),
               ),
             ],

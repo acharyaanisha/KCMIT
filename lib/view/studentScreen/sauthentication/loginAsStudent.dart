@@ -41,7 +41,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
     print("Authenticating to URL: $url");
 
     final authenticateRequest = Student(email: username, password: password);
-    print("Sending payload: ${jsonEncode(authenticateRequest.toJson())}");
+    // print("Sending payload: ${jsonEncode(authenticateRequest.toJson())}");
 
     setState(() {
       errorMessage = null;
@@ -56,20 +56,20 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
         body: jsonEncode(authenticateRequest.toJson()),
       );
 
-      print("Response body: ${response.body}");
+      // print("Response body: ${response.body}");
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
-        print("response: $responseBody");
+        // print("response: $responseBody");
 
         final String token = responseBody['token'];
         context.read<studentTokenProvider>().setToken(token);
         context.read<studentTokenProvider>().getRoleFromToken(token);
 
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // await prefs.setString('token', token);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', token);
 
-        print("Token: $token");
+        // print("Token: $token");
 
         setState(() {
           successMessage = 'Login successful!';
@@ -207,7 +207,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
         Text(
           "Let's Sign in",
           style: TextStyle(
-            fontSize: 30,
+            fontSize: MediaQuery.of(context).size.width * 0.08,
             fontWeight: FontWeight.bold,
             color: Colors.black,
           ),
@@ -217,7 +217,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
         Text(
           '''Welcome Back,You've been missed!''',
           style: TextStyle(
-            fontSize: 20,
+            fontSize: MediaQuery.of(context).size.width * 0.05,
             color: Colors.black,
           ),
           textAlign: TextAlign.justify,

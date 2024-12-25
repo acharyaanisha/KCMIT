@@ -257,7 +257,7 @@ class _ResourceState extends State<Resource> {
                           });
                         },
                         child: Card(
-                          color: Colors.white,
+                          color: Colors.grey.shade50,
                           elevation: 4.0,
                           margin: const EdgeInsets.all(10.0),
                           shape: RoundedRectangleBorder(
@@ -294,55 +294,67 @@ class _ResourceState extends State<Resource> {
                                   overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
                                 ),
                                 const SizedBox(height: 16),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          final fileUrl =
-                                              "http://46.250.248.179:5000/${resource['url']}";
-                                          print("URL: $fileUrl");
-                                          _openPDF(fileUrl, resource['title']);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xff323465),
+                                Center(
+                                  child: SizedBox(
+                                    width: 350,
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              final fileUrl =
+                                                  "http://192.168.1.78:5000/${resource['url']}";
+                                              print("URL: $fileUrl");
+                                              _openPDF(fileUrl, resource['title']);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: const Color(0xff323465),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            icon: const Icon(
+                                              Icons.picture_as_pdf_outlined,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                            label: const Text(
+                                              'View',
+                                              style: TextStyle(fontSize: 15, color: Colors.white),
+                                            ),
+                                          ),
                                         ),
-                                        icon: const Icon(
-                                          Icons.picture_as_pdf_outlined,
-                                          size: 18,
-                                          color: Colors.white,
+                                        const SizedBox(width: 40),
+                                        Expanded(
+                                          child: ElevatedButton.icon(
+                                            onPressed: () {
+                                              final fileUrl =
+                                                  "http://46.250.248.179:5000/${resource['url']}";
+                                              final customPath =
+                                                  "/storage/emulated/0/Download/${resource['url']}";
+                                              print('Download URL: $fileUrl');
+                                              downloadPdf(fileUrl, customPath);
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                              backgroundColor: const Color(0xff323465),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                            icon: const Icon(
+                                              Icons.file_download_outlined,
+                                              size: 18,
+                                              color: Colors.white,
+                                            ),
+                                            label: const Text('Download',
+                                                style: TextStyle(fontSize: 15, color: Colors.white),
+                                            ),
+                                          ),
                                         ),
-                                        label: const Text(
-                                          'View',
-                                          style: TextStyle(fontSize: 15, color: Colors.white),
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: ElevatedButton.icon(
-                                        onPressed: () {
-                                          final fileUrl =
-                                              "http://46.250.248.179:5000/${resource['url']}";
-                                          final customPath =
-                                              "/storage/emulated/0/Download/${resource['url']}";
-                                          print('Download URL: $fileUrl');
-                                          downloadPdf(fileUrl, customPath);
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: const Color(0xff323465),
-                                        ),
-                                        icon: const Icon(
-                                          Icons.file_download_outlined,
-                                          size: 18,
-                                          color: Colors.white,
-                                        ),
-                                        label: const Text('Download',
-                                            style: TextStyle(fontSize: 15, color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                                   ],
                             ),
