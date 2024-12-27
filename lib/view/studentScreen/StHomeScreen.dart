@@ -197,7 +197,11 @@ class _StHomeScreenState extends State<StHomeScreen> {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     "Latest Notices",
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Color(0xff000000),
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -239,7 +243,7 @@ class _StHomeScreenState extends State<StHomeScreen> {
                                 Text(
                                   noticeItem['title'],
                                   style: TextStyle(
-                                    fontSize: 20,
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),

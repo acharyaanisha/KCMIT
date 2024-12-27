@@ -63,10 +63,12 @@ class _StHomeMainState extends State<StHomeMain> {
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.transparent,
               elevation: 0,
-              selectedItemColor: Colors.blue,
+              selectedItemColor: Color(0xff323465),
+              // selectedItemColor: Colors.blue,
               unselectedItemColor:  Color(0xff323465),
               selectedIconTheme: IconThemeData(
-                color: Colors.blue,
+                color: Color(0xff323465),
+                // color: Colors.blue,
                 size: 30,
               ),
               unselectedIconTheme: IconThemeData(

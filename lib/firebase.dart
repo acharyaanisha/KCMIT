@@ -128,24 +128,40 @@ class FirebaseApi {
     });
   }
 
-  // Future<void> subscribeToRoleTopic(String role) async {
-  //   if (role == "student") {
-  //     FirebaseMessaging.instance.subscribeToTopic("students");
-  //   } else if (role == "faculty") {
-  //     FirebaseMessaging.instance.subscribeToTopic("faculty");
-  //   } else if (role == "parent") {
-  //     FirebaseMessaging.instance.subscribeToTopic("parents");
-  //   }
-  // }
-
   Future<void> subscribeToTopics() async {
     try {
-      await _firebaseMessaging.subscribeToTopic('BIM');
+      await _firebaseMessaging.subscribeToTopic('all');
       print("Subscribed to 'all' topic successfully!");
     } catch (e) {
       print("Failed to subscribe to 'all' topic: $e");
     }
   }
+
+  // Future<List<String>> getRoleFromToken(String token) async {
+  //   final parts = token.split('.');
+  //   if (parts.length != 3) {
+  //     throw Exception("Invalid token");
+  //   }
+  //
+  //   final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts[1])));
+  //   final payloadMap = json.decode(payload);
+  //
+  //   print("Decoded Payload in firebase:  $payload");
+  //
+  //   if (payloadMap is! Map<String, dynamic>) {
+  //     throw Exception("Invalid payload");
+  //   }
+  //
+  //   if (payloadMap.containsKey('role') && payloadMap['role'] is List) {
+  //     print("Roles found in the token: ${payloadMap['role']}");
+  //     return List<String>.from(payloadMap['role']);
+  //   } else {
+  //     print("No 'role' found in the token payload");
+  //     return [];
+  //   }
+  // }
+
+
 
   Future<void> initNotifications() async {
     await _firebaseMessaging.requestPermission();
@@ -153,7 +169,9 @@ class FirebaseApi {
 
     print("FCM Token: $FCMToken");
 
-    // await subscribeToRoleTopic();
+    // if (FCMToken != null) {
+    //   await subscribeToRoleBasedTopics(FCMToken);
+    // }
     await subscribeToTopics();
     await initPushNotifications();
     await initLocalNotifications();

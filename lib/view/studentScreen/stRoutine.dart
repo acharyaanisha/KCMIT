@@ -12,9 +12,7 @@ class StRoutineScreen extends StatefulWidget {
   @override
   State<StRoutineScreen> createState() => _StRoutineScreenState();
 }
-
-class _StRoutineScreenState extends State<StRoutineScreen> {
-
+class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProviderStateMixin {
   String? selectedItem;
   String errorMessage = '';
   bool isLoading = true;
@@ -22,6 +20,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
   DateTime currentDate = DateTime.now();
   int currentDay = DateTime.now().weekday;
   StudentProfile? studentProfile;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -33,17 +32,15 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
     });
   }
 
-
   String getDayFromIndex(int dayIndex) {
     switch (dayIndex) {
-      case 1: return 'MONDAY';
-      case 2: return 'TUESDAY';
-      case 3: return 'WEDNESDAY';
-      case 4: return 'THURSDAY';
-      case 5: return 'FRIDAY';
-      case 6: return 'SATURDAY';
-      case 7: return 'SUNDAY';
-      default: return 'MONDAY';
+      case 1: return 'SUNDAY';
+      case 2: return 'MONDAY';
+      case 3: return 'TUESDAY';
+      case 4: return 'WEDNESDAY';
+      case 5: return 'THURSDAY';
+      case 6: return 'FRIDAY';
+      default: return 'SUNDAY';
     }
   }
 
@@ -58,8 +55,6 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
           'Authorization': 'Bearer $token',
         },
       );
-      print("URL: $url");
-      print("Response: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
@@ -67,19 +62,12 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
           routineData = jsonResponse['data'];
           errorMessage = 'assets/no_data.png';
           isLoading = false;
+          _tabController = TabController(
+            length: routineData.keys.length,
+            vsync: this,
+            initialIndex: currentDay > 6 ? 0 : currentDay - 1,
+          );
         });
-
-        if (routineData.isEmpty) {
-          setState(() {
-            errorMessage = 'assets/no_data.png';
-          });
-        }
-
-        if (!routineData.containsKey(selectedItem)) {
-          setState(() {
-            selectedItem = routineData.keys.isNotEmpty ? routineData.keys.first : null;
-          });
-        }
       } else {
         setState(() {
           errorMessage = 'assets/no_data.png';
@@ -107,7 +95,8 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
       );
 
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        final jsonResponse =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           studentProfile = StudentProfile.fromJson(jsonResponse['data']);
           errorMessage = '';
@@ -131,116 +120,82 @@ class _StRoutineScreenState extends State<StRoutineScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(70),
+        preferredSize: const Size.fromHeight(70),
         child: ClipRRect(
           borderRadius: const BorderRadius.vertical(
             bottom: Radius.circular(30),
           ),
           child: AppBar(
-            title: Text("Routine"),
+            title: const Text("Routine"),
           ),
         ),
       ),
-      body: isLoading
-          ? Padding(
-            padding: const EdgeInsets.all(100.0),
-            child: const Center(child: CircularProgressIndicator()),
-          )
-          : routineData.isEmpty
-          ? Center(
-        child: errorMessage.isNotEmpty
-            ? (errorMessage.contains('no_data.png')
-            ? Image.asset(errorMessage)
-            : Image.asset(errorMessage))
-            : Image.asset(errorMessage),
-      )
-          : Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 13.0, left: 10, right: 10),
         child: Column(
           children: [
-            Expanded(
-              flex: 1,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                ),
-                itemCount: routineData.keys.length,
-                itemBuilder: (context, index) {
-                  final day = routineData.keys.elementAt(index);
+            if (_tabController != null)
+              TabBar(
+                controller: _tabController,
+                labelColor: Color(0xff323465),
+                indicatorColor: Color(0xff323465),
+                unselectedLabelColor: Colors.black,
+                // indicator: BoxDecoration(
+                //   color: Color(0xff323465),
+                //   shape: BoxShape.rectangle,
+                //   border: Border.all(
+                //     color: Colors.white,
+                //     width: 2.0,
+                //   ),
+                //   borderRadius: BorderRadius.circular(5)
+                // ),
+                tabs: routineData.keys.map((day) {
                   String firstThreeChars = day.length >= 3 ? day.substring(0, 3) : day;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedItem = day;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Card(
-                        margin: const EdgeInsets.all(8.0),
-                        color: selectedItem == day ? Color(0xff323465) : Colors.white,
-                        child: Center(
-                          child: Text(
-                            firstThreeChars,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: selectedItem == day ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                  return Container(
+                      child: Tab(text: firstThreeChars,));
+                }).toList(),
               ),
-            ),
-            selectedItem != null
-                ? Container(
-              height: 640,
-              child: Column(
-                children: [
-                  if (routineData[selectedItem] != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(routineData[selectedItem]!.length, (index) {
-                        var routine = routineData[selectedItem]![index];
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: Card(
-                            color: Colors.grey.shade50,
-                            // color: Color(0xffe8edef),
-                            // boxShadow:[ BoxShadow( color: Color.fromRGBO(100, 100, 111, 0.2), blurRadius: 29, spreadRadius: 0 offset: Offset( 0, 7, ), ), ],
-                            elevation: 2,
-                            margin:  EdgeInsets.all(8.0),
-                              borderOnForeground:false,
-                            child: ListTile(
-                              leading: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    bottom: Radius.circular(0),
-                                  ),
-                                  child: Icon(Icons.timer_outlined, size: 50,color:  Color(0xff323465),)),
-                              title: Text('${routine['startTime']} - ${routine['endTime']}',
-                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("${routine['subject']} (Room ${routine['room']})", style: TextStyle(fontSize: 15)),
-                                  // Text('${routine['room']}', style: TextStyle(fontSize: 15)),
-                                  Text('${routine['faculty']}', style: TextStyle(fontSize: 15)),
-                                ],
-                              ),
+
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: _tabController != null
+                    ? TabBarView(
+                  controller: _tabController,
+                  children: routineData.keys.map((day) {
+                    return routineData[day] != null
+                        ? ListView.builder(
+                      itemCount: routineData[day]!.length,
+                      itemBuilder: (context, index) {
+                        var routine = routineData[day]![index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          color: Colors.grey.shade50,
+                          child: ListTile(
+                            leading: const Icon(Icons.timer_outlined, size: 50, color: Color(0xff323465)),
+                            title: Text(
+                              '${routine['startTime']} - ${routine['endTime']}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${routine['subject']} (Room ${routine['room']})"),
+                                Text(routine['faculty']),
+                              ],
                             ),
                           ),
                         );
-                      }),
+                      },
                     )
-                  else
-                    Image.asset(errorMessage),
-                ],
+                        : Image.asset(errorMessage);
+                  }).toList(),
+                )
+                    : Center(child: CircularProgressIndicator()),
               ),
-            )
-                : Container(),
+            ),
           ],
         ),
       ),

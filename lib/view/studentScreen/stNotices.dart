@@ -76,8 +76,8 @@ class _StudentNoticesState extends State<StudentNotices> {
                   ? fileUrl
                   : "http://46.250.248.179:5000/$fileUrl",
               fit: BoxFit.contain,
-              height: MediaQuery.of(context).size.height*0.5,
-              width: MediaQuery.of(context).size.width*0.5,
+              // height: MediaQuery.of(context).size.height*0.5,
+              // width: MediaQuery.of(context).size.width*0.5,
             ),
           ),
         );
@@ -144,7 +144,7 @@ class _StudentNoticesState extends State<StudentNotices> {
                               Text(
                                 noticeItem['title'],
                                 style: TextStyle(
-                                  fontSize: 20,
+                                  fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black
                                 ),
@@ -192,11 +192,7 @@ class _StudentNoticesState extends State<StudentNotices> {
                                         // height: 350,
                                         fit: BoxFit.contain,
                                         errorBuilder: (context, error, stackTrace) {
-                                          return Icon(
-                                            Icons.broken_image,
-                                            color: Colors.grey,
-                                            size: 50,
-                                          );
+                                          return Text("");
                                         },
                                       ),
                                     ),

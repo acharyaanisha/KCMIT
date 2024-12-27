@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kcmit/model/authenticateModel/studentAuthenticateModel.dart';
@@ -21,11 +22,26 @@ class LoginAsStudent extends StatefulWidget {
 class _LoginAsStudentState extends State<LoginAsStudent> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _firebaseMessaging = FirebaseMessaging.instance;
 
   bool isPasswordVisible = false;
   String? errorMessage;
   String? successMessage;
   bool isLoading = false;
+
+
+  Future<void> subscribeToRoleBasedTopics(String token) async {
+    try {
+      List<String> roles = await context.read<studentTokenProvider>().getRoleFromToken(token);
+
+      for (String role in roles) {
+        await _firebaseMessaging.subscribeToTopic(role);
+        print("Subscribed to topic: $role");
+      }
+    } catch (e) {
+      print("Error subscribing to topics: $e");
+    }
+  }
 
 
   Future<void> authenticateStudent(String username, String password) async {
@@ -65,6 +81,8 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
         final String token = responseBody['token'];
         context.read<studentTokenProvider>().setToken(token);
         context.read<studentTokenProvider>().getRoleFromToken(token);
+        await subscribeToRoleBasedTopics(token);
+        // await subscribeToTopic(token);
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);

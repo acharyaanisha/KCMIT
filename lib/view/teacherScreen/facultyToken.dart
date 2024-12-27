@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -30,6 +32,32 @@ class facultyTokenProvider with ChangeNotifier {
     _token = await _storage.read(key: 'jwt_token');
     _checkTokenExpiry();
     notifyListeners();
+  }
+
+  Future<String> getRoleFromToken(String token) async {
+    _token = token;
+    final parts = _token?.split('.');
+    if (parts?.length != 3) {
+      throw Exception("Invalid token");
+    }
+
+    final payload = utf8.decode(base64Url.decode(base64Url.normalize(parts![1])));
+    final payloadMap = json.decode(payload);
+
+    print("Decoded Payload: $payload");
+
+    if (payloadMap is! Map<String, dynamic>) {
+      throw Exception("Invalid payload");
+    }
+
+
+    if (payloadMap.containsKey('role') && payloadMap['role']) {
+      print("Roles found in the token: ${payloadMap['role']}");
+      return (payloadMap['role']);
+    } else {
+      print("No 'role' found in the token payload");
+      return "";
+    }
   }
 
   void _logout() {

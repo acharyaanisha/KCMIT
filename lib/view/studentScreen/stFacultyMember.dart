@@ -57,7 +57,7 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
     }
   }
 
-  void _showDialog(String imageUrl, String name, String email, String mobileNumber, String qualification, String specialization) {
+  void _showDialog(String? imageUrl, String name, String email, String mobileNumber, String qualification, String specialization) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -72,9 +72,10 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.network(
-                  imageUrl.startsWith('http')
-                      ? imageUrl
-                      : "http://kcmit-api.kcmit.edu.np/$imageUrl",
+                  // imageUrl.startsWith('http')
+                  //     ? imageUrl
+                  //     :
+                  "http://kcmit-api.kcmit.edu.np/$imageUrl",
                   fit: BoxFit.contain,
                 ),
                 const SizedBox(height: 10),
@@ -97,9 +98,14 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Text(
-                  specialization,
-                  style: const TextStyle(fontSize: 16),
+                Row(
+                  children: [
+                    const Icon(Icons.psychology_outlined,),
+                    Text(
+                      specialization,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ],
                 ),
                 const Divider(height: 15, color: Colors.grey),
                 Row(
@@ -197,9 +203,10 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(15.0),
                       child: Image.network(
-                        member['profile_pic'].startsWith('http')
-                            ? member['profile_pic']
-                            : "http://kcmit-api.kcmit.edu.np/${member['profile_pic']}",
+                        // member['profile_pic'].startsWith('http')
+                        //     ? member['profile_pic']
+                        //     :
+                        "http://kcmit-api.kcmit.edu.np/${member['profile_pic']}",
                         fit: BoxFit.cover,
                         width: double.infinity,
                         height: double.infinity,

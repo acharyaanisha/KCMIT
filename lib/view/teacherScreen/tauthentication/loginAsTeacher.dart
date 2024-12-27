@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:kcmit/model/authenticateModel/facultyAuthenticateModel.dart';
@@ -20,12 +21,27 @@ class LoginAsTeacher extends StatefulWidget {
 class _LoginAsTeacherState extends State<LoginAsTeacher> {
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final _firebaseMessaging = FirebaseMessaging.instance;
 
   bool isPasswordVisible = false;
   String? errorMessage;
   String? successMessage;
   bool isLoading = false;
 
+
+
+  Future<void> subscribeToRoleBasedTopics(String token) async {
+    try {
+      String roles = await context.read<facultyTokenProvider>().getRoleFromToken(token);
+
+      if ( roles.isNotEmpty) {
+        await _firebaseMessaging.subscribeToTopic(roles);
+        print("Subscribed to topic: $roles");
+      }
+    } catch (e) {
+      print("Error subscribing to topics: $e");
+    }
+  }
 
   Future<void> authenticateTeacher(String username, String password) async {
     if (username.isEmpty || password.isEmpty) {
@@ -64,6 +80,8 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
 
         final String token = responseBody['token'];
         context.read<facultyTokenProvider>().setToken(token);
+        context.read<facultyTokenProvider>().getRoleFromToken(token);
+        await subscribeToRoleBasedTopics(token);
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);

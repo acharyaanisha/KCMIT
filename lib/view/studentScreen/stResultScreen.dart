@@ -85,11 +85,12 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 15.0),
+              padding: const EdgeInsets.only(top: 15.0,left: 15,right: 15),
               child: Center(
                 child: DataTable(
-                  columnSpacing: 30,
+                  // columnSpacing: 30,
                   headingRowHeight: 50,
+                  dataRowHeight:MediaQuery.of(context).size.height*0.08,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.black, width: 2),
                     borderRadius: BorderRadius.circular(8.0),
@@ -97,22 +98,22 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
                   columns: const [
                     DataColumn(
                         label: Text('Subject',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14))),
                     DataColumn(
-                        label: Text('Obtained Marks',
-                            style:TextStyle(fontWeight: FontWeight.bold))),
+                        label: Text('Obtain\nMarks',
+                            style:TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
                     DataColumn(
                         label: Text('Remarks',
-                            style: TextStyle(fontWeight: FontWeight.bold))),
+                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
                   ],
                   rows: examResult.map((examResult) {
                     final subject = examResult.subject;
                     final obtainedMarks = examResult.obtainedMarks.toString();
                     final remarks = examResult.remarks;
                     return DataRow(cells: [
-                      DataCell(Text(subject,)),
-                      DataCell(Text(obtainedMarks,)),
-                      DataCell(Text(remarks,)),
+                      DataCell(Text(subject,style: TextStyle(fontSize: 12),)),
+                      DataCell(Text(obtainedMarks,style: TextStyle(fontSize: 12),)),
+                      DataCell(Text(remarks,style: TextStyle(fontSize: 12),)),
                     ]);
                   }).toList(),
                 ),

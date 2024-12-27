@@ -56,11 +56,31 @@
         <string>mailto</string>
     </array>
 
-<key>NSCameraUsageDescription</key>
-<string>We need access to your camera for uploading your profile picture.</string>
-<key>NSPhotoLibraryUsageDescription</key>
-<string>We need access to your photo library for uploading your profile picture.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera for uploading your profile picture.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library for uploading your profile picture.</string>
 
+    <!-- Added Permissions -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>We need access to your microphone for recording audio during events or games.</string>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need your location to provide location-based services during the event.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to enhance app functionality and offer personalized features.</string>
+
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true/>
+    </dict>
+
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+    </array>
 
 </dict>
 </plist>
