@@ -34,9 +34,9 @@ class Section extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 10.0,
-              crossAxisSpacing: 10.0,
+              crossAxisCount: 4,
+              mainAxisSpacing: 15.0,
+              // crossAxisSpacing: .0,
             ),
             itemBuilder: (BuildContext context, int index) {
               return Utility.createCustomIconButton(

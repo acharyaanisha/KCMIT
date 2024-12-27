@@ -72,11 +72,15 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Image.network(
-                  // imageUrl.startsWith('http')
-                  //     ? imageUrl
+                  // member['profile_pic'].startsWith('http')
+                  //     ? member['profile_pic']
                   //     :
                   "http://kcmit-api.kcmit.edu.np/$imageUrl",
-                  fit: BoxFit.contain,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder: (context, error, stackTrace) => Center(child: const Icon(Icons.person_outlined,size: 100,)),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -100,13 +104,19 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    const Icon(Icons.psychology_outlined,),
-                    Text(
-                      specialization,
-                      style: const TextStyle(fontSize: 16),
+                    const Icon(Icons.psychology_outlined),
+                    Expanded(
+                      child: Text(
+                        specialization,
+                        maxLines: 5,
+                        softWrap: true,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ],
                 ),
+
                 const Divider(height: 15, color: Colors.grey),
                 Row(
                   children: [
@@ -214,7 +224,7 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
                           if (loadingProgress == null) return child;
                           return const Center(child: CircularProgressIndicator());
                         },
-                        errorBuilder: (context, error, stackTrace) => const Icon(Icons.error),
+                        errorBuilder: (context, error, stackTrace) => Center(child: const Icon(Icons.person_outlined,size: 100,)),
                       ),
                     ),
                     Positioned(

@@ -174,25 +174,9 @@ class _FCalendarScreenState extends State<FCalendarScreen> {
           ),
         ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _events.isEmpty
-          ? Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(errorMessage, height: 150),
-            const Text(
-              'No Events Found',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
-        ),
-      )
-          : SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
-            // Calendar to select the date
             Container(
               height: 300,
               child: CalendarDatePicker(
@@ -202,48 +186,72 @@ class _FCalendarScreenState extends State<FCalendarScreen> {
                 onDateChanged: onDateChanged,
               ),
             ),
-            // List of filtered events
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: getFilteredEvents().length,
-              itemBuilder: (context, index) {
-                final event = getFilteredEvents()[index];
-                return GestureDetector(
-                  onTap: () {
-                    _showDialog(
-                      event['eventPoster'],
-                      event['name'],
-                      event['description'],
-                      event['location'],
-                      event['eventTime'],
-                      event['eventDate'],
-                    );
-                  },
-                  child: Card(
-                    elevation: 5,
-                    color: Colors.grey.shade50,
-                    margin: const EdgeInsets.all(8.0),
-                    child: ListTile(
-                      title: Text(event['name']),
-                      subtitle: Text(
-                        "Date: ${event['eventDate']}\n"
-                            "Time: ${event['eventTime']}\n"
-                            "Location: ${event['location']}",
-                      ),
-                      trailing: Text(
-                        event['eventStatus'],
-                        style: TextStyle(
-                          color: event['eventStatus'] == 'UPCOMING'
-                              ? Colors.green
-                              : Colors.red,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+            SizedBox(height: 5,),
+            Container(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _events.isEmpty
+                  ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Image.asset(errorMessage, height: 150),
+                    const Text(
+                      'No Events Found',
+                      style: TextStyle(fontSize: 18),
                     ),
-                  ),
-                );
-              },
+                  ],
+                ),
+              )
+                  : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // List of filtered events
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: getFilteredEvents().length,
+                      itemBuilder: (context, index) {
+                        final event = getFilteredEvents()[index];
+                        return GestureDetector(
+                          onTap: () {
+                            _showDialog(
+                              event['eventPoster'],
+                              event['name'],
+                              event['description'],
+                              event['location'],
+                              event['eventTime'],
+                              event['eventDate'],
+                            );
+                          },
+                          child: Card(
+                            elevation: 5,
+                            color: Colors.grey.shade50,
+                            margin: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              title: Text(event['name']),
+                              subtitle: Text(
+                                "Date: ${event['eventDate']}\n"
+                                    "Time: ${event['eventTime']}\n"
+                                    "Location: ${event['location']}",
+                              ),
+                              trailing: Text(
+                                event['eventStatus'],
+                                style: TextStyle(
+                                  color: event['eventStatus'] == 'UPCOMING'
+                                      ? Colors.green
+                                      : Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

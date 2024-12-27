@@ -203,6 +203,18 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           "Attendance",
                           StudentAttendance(),
                             Colors.deepPurple.shade300
+                        ),IconAndText(
+                          Icons.forum_outlined,
+                          // "assets/attendance.png",
+                          "Attendance",
+                          StudentAttendance(),
+                            Colors.deepPurple.shade300
+                        ),IconAndText(
+                          Icons.check_circle_outline,
+                          // "assets/attendance.png",
+                          "Attendance",
+                          StudentAttendance(),
+                            Colors.deepPurple.shade300
                         ),
                       ],
                     ),
@@ -213,7 +225,11 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Latest Notices",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                            fontSize: 18.0,
+                            color: Color(0xff000000),
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
@@ -255,7 +271,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                       Text(
                                         noticeItem['title'],
                                         style: TextStyle(
-                                          fontSize: 20,
+                                          fontSize: 16,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.black,
                                         ),
@@ -315,11 +331,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                                   fit: BoxFit.contain,
                                                   errorBuilder: (context,
                                                       error, stackTrace) {
-                                                    return Icon(
-                                                      Icons.broken_image,
-                                                      color: Colors.grey,
-                                                      size: 50,
-                                                    );
+                                                    return Text("");
                                                   },
                                                 ),
                                               ),

@@ -14,7 +14,7 @@ class FacultyRoutineScreen extends StatefulWidget {
   State<FacultyRoutineScreen> createState() => _FacultyRoutineScreenState();
 }
 
-class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> {
+class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with SingleTickerProviderStateMixin{
 
   String? selectedItem;
   String errorMessage = '';
@@ -23,6 +23,7 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> {
   DateTime currentDate = DateTime.now();
   int currentDay = DateTime.now().weekday;
   StudentProfile? studentProfile;
+  TabController? _tabController;
 
   @override
   void initState() {
@@ -66,6 +67,11 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> {
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           routineData = jsonResponse['data'];
+          _tabController = TabController(
+            length: routineData.keys.length,
+            vsync: this,
+            initialIndex: currentDay > 6 ? 0 : currentDay - 1,
+          );
           errorMessage = '';
           isLoading = false;
         });
@@ -137,100 +143,78 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> {
           ),
         ),
       ),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : routineData.isEmpty
-          ? Center(
-          child: Text(
-              errorMessage.isNotEmpty ? errorMessage : 'No routine data found.'))
-          : Padding(
-        padding: const EdgeInsets.all(8.0),
+      body: Padding(
+        padding: const EdgeInsets.only(top: 13.0, ),
         child: Column(
           children: [
-            Expanded(
-              flex: 1,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 6,
-                ),
-                itemCount: routineData.keys.length,
-                itemBuilder: (context, index) {
-                  final day = routineData.keys.elementAt(index);
+            if (_tabController != null)
+              TabBar(
+                controller: _tabController,
+                labelColor: Color(0xff323465),
+                indicatorColor: Color(0xff323465),
+                unselectedLabelColor: Colors.black,
+                // indicator: BoxDecoration(
+                //   color: Color(0xff323465),
+                //   shape: BoxShape.rectangle,
+                //   border: Border.all(
+                //     color: Colors.white,
+                //     width: 2.0,
+                //   ),
+                //   borderRadius: BorderRadius.circular(5)
+                // ),
+                tabs: routineData.keys.map((day) {
                   String firstThreeChars = day.length >= 3 ? day.substring(0, 3) : day;
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        selectedItem = day;
-                      });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Card(
-                        margin: const EdgeInsets.all(8.0),
-                        color: selectedItem == day ? Color(0xff323465) : Colors.white,
-                        child: Center(
-                          child: Text(
-                            firstThreeChars,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: selectedItem == day ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                },
+                  return Container(
+                      child: Tab(text: firstThreeChars,));
+                }).toList(),
               ),
-            ),
-            selectedItem != null
-                ? Container(
-              height: 635,
-              child: Column(
-                children: [
-                  if (routineData[selectedItem] != null)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: List.generate(routineData[selectedItem]!.length, (index) {
-                        var routine = routineData[selectedItem]![index];
-                        return Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: Card(
-                            color: Colors.white,
-                            // color: Color(0xffe8edef),
-                            elevation: 8,
-                            margin: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              leading: ClipRRect(
-                                  borderRadius: const BorderRadius.vertical(
-                                    bottom: Radius.circular(30),
-                                  ),
-                                  child: Icon(Icons.timer_outlined, size: 50)
-                              ),
-                              title: Text('${routine['startTime']} - ${routine['endTime']}',
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 17),),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(routine['subject'],style: TextStyle(fontSize: 15),),
-                                  Text('${routine['room']}',style: TextStyle(fontSize: 15),),
-                                ],
-                              ),
+
+            Expanded(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0,top: 10),
+                child: _tabController != null
+                    ? TabBarView(
+                  controller: _tabController,
+                  children: routineData.keys.map((day) {
+                    return routineData[day] != null
+                        ? ListView.builder(
+                      itemCount: routineData[day]!.length,
+                      itemBuilder: (context, index) {
+                        var routine = routineData[day]![index];
+                        return Card(
+                          margin: const EdgeInsets.all(8.0),
+                          color: Colors.grey.shade50,
+                          child: ListTile(
+                            leading: const Icon(Icons.timer_outlined, size: 50, color: Color(0xff323465)),
+                            title: Text(
+                              '${routine['startTime']} - ${routine['endTime']}',
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                            ),
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text("${routine['subject']} (Room ${routine['room']})"),
+                                Text('Semester:${routine['semester']}',style: TextStyle(fontSize: 15),),
+                              ],
                             ),
                           ),
                         );
-                      }),
+                      },
                     )
-                  else
-                    Text('No routine found for this day'),
-                ],
+                        : Image.asset(errorMessage);
+                  }).toList(),
+                )
+                    : Center(child: CircularProgressIndicator()),
               ),
-            )
-                : Container(),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+
+

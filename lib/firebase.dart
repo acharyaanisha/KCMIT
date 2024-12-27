@@ -130,7 +130,7 @@ class FirebaseApi {
 
   Future<void> subscribeToTopics() async {
     try {
-      await _firebaseMessaging.subscribeToTopic('all');
+      await _firebaseMessaging.subscribeToTopic('ALL');
       print("Subscribed to 'all' topic successfully!");
     } catch (e) {
       print("Failed to subscribe to 'all' topic: $e");

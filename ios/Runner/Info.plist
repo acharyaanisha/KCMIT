@@ -73,7 +73,10 @@
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>
+        <key>NSAllowsArbitraryLoadsForMedia</key>
+        <key>NSLocalNetworkUsageDescription</key>
         <true/>
+
     </dict>
 
     <key>UIBackgroundModes</key>

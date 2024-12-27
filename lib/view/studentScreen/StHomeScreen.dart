@@ -6,6 +6,7 @@ import 'package:kcmit/dummymodel/imageList.dart';
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/service/section.dart';
 import 'package:kcmit/view/Calendar.dart';
+import 'package:kcmit/view/studentScreen/Course.dart';
 import 'package:kcmit/view/studentScreen/stAttendance.dart';
 import 'package:kcmit/view/studentScreen/stFacultyMember.dart';
 import 'package:kcmit/view/studentScreen/stNotices.dart';
@@ -177,17 +178,31 @@ class _StHomeScreenState extends State<StHomeScreen> {
                       Icons.calendar_month_outlined,
                       "Calendar",
                       CalendarScreen(),
-                      Colors.red.shade300),
+                      Colors.deepPurple.shade300),
                   IconAndText(
                       Icons.person,
                       "Faculty",
                       FacultyMemberList(),
-                      Colors.deepPurple.shade300),
+                      Color(0xff8EB486)
+                  ),
                   IconAndText(
                       Icons.check_circle_outline,
                       "Attendance",
                       StudentAttendance(),
-                      Colors.amber.shade300),
+                      Colors.amber.shade300
+                  ),
+                  IconAndText(
+                      Icons.book_online_outlined,
+                      "My Course",
+                      CourseScreen(),
+                      Color(0xffA294F9)
+                  ),
+                  IconAndText(
+                      Icons.forum_outlined,
+                      "Forum",
+                      StudentAttendance(),
+                      Colors.red.shade300
+                  ),
                 ],
               ),
               SizedBox(height: 20,),
@@ -303,11 +318,7 @@ class _StHomeScreenState extends State<StHomeScreen> {
                                             fit: BoxFit.contain,
                                             errorBuilder: (context,
                                                 error, stackTrace) {
-                                              return Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey,
-                                                size: 50,
-                                              );
+                                              return Text("");
                                             },
                                           ),
                                         ),

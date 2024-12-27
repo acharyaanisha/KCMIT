@@ -32,14 +32,14 @@ class Utility {
               btnText,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 15.0,
+                fontSize: 13.0,
               ),
             ),
           ),
         ],
       )
           : Padding(
-            padding: const EdgeInsets.only(left: 20,right: 20),
+            padding: const EdgeInsets.only(left: 15,right: 9),
             child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -47,11 +47,11 @@ class Utility {
               height: MediaQuery
                   .of(context)
                   .size
-                  .height * 0.10,
+                  .height * 0.09,
               width: MediaQuery
                   .of(context)
                   .size
-                  .width * 0.4,
+                  .width,
               decoration: BoxDecoration(
                 color: backgroundColor,
                 borderRadius: BorderRadius.circular(10),
@@ -63,16 +63,17 @@ class Utility {
                   ),
                 ],
               ),
-              child: Icon(iconName, size: 50, color: Colors.white),
+              child: Icon(iconName, size: 40, color: Colors.white),
             ),
             const SizedBox(height: 5.0),
             Text(
               btnText,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 15.5, color: Colors.black),
+              style: const TextStyle(fontSize: 12.5, color: Colors.black),
             ),
                     ],
                   ),
+
           ),
     );
   }

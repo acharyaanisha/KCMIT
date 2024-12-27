@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/teacherScreen/ThomeScreen.dart';
+import 'package:kcmit/view/teacherScreen/factRoutine.dart';
 import 'package:kcmit/view/teacherScreen/facultySetting.dart';
 
 
@@ -18,6 +19,7 @@ class _FactHomeMainState extends State<FactHomeMain> {
   Widget build(BuildContext context) {
     final List<Widget> _pages = [
       TeachHomeScreen(),
+      FacultyRoutineScreen(),
       FacultySetting(),
       // StudentMenu(),
     ];
@@ -64,11 +66,11 @@ class _FactHomeMainState extends State<FactHomeMain> {
               type: BottomNavigationBarType.fixed,
               backgroundColor: Colors.transparent,
               elevation: 0,
-              selectedItemColor: Colors.blue,
+              selectedItemColor: Color(0xff323465),
               unselectedItemColor: Colors.black,
               selectedIconTheme: IconThemeData(
                 // color: Color(0xff323465),
-                color: Colors.blue,
+                color: Color(0xff323465),
                 size: 30,
               ),
               unselectedIconTheme: IconThemeData(
@@ -81,6 +83,9 @@ class _FactHomeMainState extends State<FactHomeMain> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
+                  icon: Icon(Icons.timer_outlined,),
+                  label: 'Routine',
+                ),BottomNavigationBarItem(
                   icon: Icon(Icons.settings_outlined,),
                   label: 'Setting',
                 ),

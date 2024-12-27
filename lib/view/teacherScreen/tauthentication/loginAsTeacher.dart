@@ -32,11 +32,13 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
 
   Future<void> subscribeToRoleBasedTopics(String token) async {
     try {
-      String roles = await context.read<facultyTokenProvider>().getRoleFromToken(token);
+      String role = await context.read<facultyTokenProvider>().getRoleFromToken(token);
 
-      if ( roles.isNotEmpty) {
-        await _firebaseMessaging.subscribeToTopic(roles);
-        print("Subscribed to topic: $roles");
+      if (role.isNotEmpty) {
+        print("Subscribing to topic: $role");
+        await _firebaseMessaging.subscribeToTopic(role);
+      } else {
+        print("Unexpected role format: $role (type: ${role.runtimeType})");
       }
     } catch (e) {
       print("Error subscribing to topics: $e");

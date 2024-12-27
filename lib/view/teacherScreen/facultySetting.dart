@@ -25,6 +25,7 @@ class _FacultySettingState extends State<FacultySetting> {
           child: AppBar(
             title: Text("Setting"),
             centerTitle: true,
+            automaticallyImplyLeading: false,
           ),
         ),
       ),
