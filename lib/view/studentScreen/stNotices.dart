@@ -25,15 +25,24 @@ class _StudentNoticesState extends State<StudentNotices> {
     fetchNoticeList();
   }
 
+
+  Future<void> _refreshData() async {
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      fetchNoticeList();
+    });
+  }
   Future<void> fetchNoticeList() async {
-    // final token = context.read<studentTokenProvider>().token;
+    final token = context.read<studentTokenProvider>().token;
     final url = Config.getStNotices();
     try {
       final response = await http.get(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          // 'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer $token',
         },
       );
       print("URL: $url");
@@ -42,7 +51,7 @@ class _StudentNoticesState extends State<StudentNotices> {
         final jsonResponse =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
-          noticeList = jsonResponse['notices'];
+          noticeList = jsonResponse['data'];
           _isExpandedList = List.filled(noticeList.length, false);
           errorMessage = '';
           isLoading = false;
@@ -101,124 +110,130 @@ class _StudentNoticesState extends State<StudentNotices> {
           ),
         ),
       ),
-      body: Center(
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: Center(
+            child: Column(
+                children: [
+                if (isLoading)
+            Center(child: const CircularProgressIndicator()),
+            if (errorMessage.isNotEmpty)
+            Padding(
+            padding: const EdgeInsets.only(top: 130.0),
+            child: Image.asset(errorMessage),
+            // child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
+            ),
+            if (!isLoading && noticeList.isNotEmpty)SingleChildScrollView(
           child: Column(
-              children: [
-              if (isLoading)
-          Center(child: const CircularProgressIndicator()),
-    if (errorMessage.isNotEmpty)
-    Padding(
-    padding: const EdgeInsets.only(top: 130.0),
-    child: Image.asset(errorMessage),
-    // child: Text(errorMessage, style: const TextStyle(color: Colors.red)),
-    ),
-    if (!isLoading && noticeList.isNotEmpty)SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.8,
-              child: ListView.builder(
-                itemCount: noticeList.length,
-                itemBuilder: (context, index) {
-                  final noticeItem = noticeList[index];
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _isExpandedList[index] = !_isExpandedList[index];
-                      });
-                    },
-                    child: Padding(
-                      padding:  EdgeInsets.symmetric(vertical: 0.0,horizontal: 10.0),
-                      child: Card(
-                        color: Colors.grey.shade50,
-                        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                        elevation: 2,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: RefreshIndicator(
+                  onRefresh: _refreshData,
+                  child: ListView.builder(
+                    itemCount: noticeList.length,
+                    itemBuilder: (context, index) {
+                      final noticeItem = noticeList[index];
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _isExpandedList[index] = !_isExpandedList[index];
+                          });
+                        },
                         child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                noticeItem['title'],
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black
-                                ),
-                              ),
-                              SizedBox(height: 5,),
-                              Row(
+                          padding:  EdgeInsets.symmetric(vertical: 0.0,horizontal: 10.0),
+                          child: Card(
+                            color: Colors.grey.shade50,
+                            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.timer_outlined, size: 17,),
-                                  SizedBox(width: 5,),
                                   Text(
-                                    noticeItem['date'],
+                                    noticeItem['title'],
                                     style: TextStyle(
                                       fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black
                                     ),
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 5),
-                              Text(
-                                _isExpandedList[index]
-                                    ? noticeItem['desc']
-                                    : noticeItem['desc'],
-                                maxLines: _isExpandedList[index] ? null : 2,
-                                overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.black
-                                ),
-
-                              ),
-
-                              SizedBox(height: 5,),
-                              _isExpandedList[index]?Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap:(){
-                                      _showImageDialog(noticeItem['fileURL']);
-                                    },
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: Image.network(
-                                        noticeItem['fileURL'] != null && noticeItem['fileURL'].startsWith('http')
-                                            ? noticeItem['fileURL']
-                                            : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
-                                        width: 330,
-                                        // height: 350,
-                                        fit: BoxFit.contain,
-                                        errorBuilder: (context, error, stackTrace) {
-                                          return Text("");
-                                        },
+                                  SizedBox(height: 5,),
+                                  Row(
+                                    children: [
+                                      Icon(Icons.timer_outlined, size: 17,),
+                                      SizedBox(width: 5,),
+                                      Text(
+                                        noticeItem['date'],
+                                        style: TextStyle(
+                                          fontSize: 15,
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
+                                  SizedBox(height: 5),
+                                  Text(
+                                    _isExpandedList[index]
+                                        ? noticeItem['desc']
+                                        : noticeItem['desc'],
+                                    maxLines: _isExpandedList[index] ? null : 2,
+                                    overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.black
+                                    ),
+
+                                  ),
+
+                                  SizedBox(height: 5,),
+                                  _isExpandedList[index]?Row(
+                                    children: [
+                                      GestureDetector(
+                                        onTap:(){
+                                          _showImageDialog(noticeItem['fileURL']);
+                                        },
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          child: Image.network(
+                                            noticeItem['fileURL'] != null && noticeItem['fileURL'].startsWith('http')
+                                                ? noticeItem['fileURL']
+                                                : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
+                                            width: 330,
+                                            // height: 350,
+                                            fit: BoxFit.contain,
+                                            errorBuilder: (context, error, stackTrace) {
+                                              return Text("");
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ):
+                                  Text(
+                                    "",
+                                    style: TextStyle(
+                                      fontSize: 0,
+                                    ),
+                                  ) ,
                                 ],
-                              ):
-                              Text(
-                                "",
-                                style: TextStyle(
-                                  fontSize: 0,
-                                ),
-                              ) ,
-                            ],
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                },
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ]
-    ),
+            ]
+            ),
+        ),
       )
     );
   }

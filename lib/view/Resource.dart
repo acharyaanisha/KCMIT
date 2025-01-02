@@ -31,6 +31,15 @@ class _ResourceState extends State<Resource> {
   }
 
 
+  Future<void> _refreshData() async {
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      fetchResourceData();
+    });
+  }
+
   Future<void> checkConnection() async {
     ConnectivityResult connectivityResult = (await Connectivity().checkConnectivity()) as ConnectivityResult;
     if (connectivityResult == ConnectivityResult.wifi) {
@@ -230,141 +239,144 @@ class _ResourceState extends State<Resource> {
           ),
         ),
       ),
-      body: isLoading
-          ? Padding(
-        padding: const EdgeInsets.all(100.0),
-        child: const Center(child: CircularProgressIndicator()),
-      )
-          : resourceData.isEmpty
-          ? Center(
-        child: errorMessage.isNotEmpty
-            ? (errorMessage.contains('no_data.png')
-            ? Image.asset(errorMessage)
-            : Image.asset(errorMessage))
-            : Image.asset(errorMessage),
-      ):
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: ListView.builder(
-                    itemCount: resourceData.length,
-                    itemBuilder: (context, index) {
-                      final resource = resourceData[index];
-                      return InkWell(
-                        onTap: () {
-                          setState(() {
-                            _isExpandedList[index] = !_isExpandedList[index];
-                          });
-                        },
-                        child: Card(
-                          color: Colors.grey.shade50,
-                          elevation: 4.0,
-                          margin: const EdgeInsets.all(10.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(15.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  resource['title'] ?? 'No Title',
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    const Icon(Icons.label_important_outline),
-                                    Text(
-                                      resource['tags'] ?? 'No Tags',
-                                      style: const TextStyle(fontSize: 15),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: isLoading
+            ? Padding(
+          padding: const EdgeInsets.all(100.0),
+          child: const Center(child: CircularProgressIndicator()),
+        )
+            : resourceData.isEmpty
+            ? Center(
+          child: errorMessage.isNotEmpty
+              ? (errorMessage.contains('no_data.png')
+              ? Image.asset(errorMessage)
+              : Image.asset(errorMessage))
+              : Image.asset(errorMessage),
+        ):
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ListView.builder(
+                      itemCount: resourceData.length,
+                      itemBuilder: (context, index) {
+                        final resource = resourceData[index];
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              _isExpandedList[index] = !_isExpandedList[index];
+                            });
+                          },
+                          child: Card(
+                            color: Colors.grey.shade50,
+                            elevation: 4.0,
+                            margin: const EdgeInsets.all(10.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    resource['title'] ?? 'No Title',
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  _isExpandedList[index]
-                                      ? resource['desc']
-                                      : resource['desc'],
-                                  maxLines: _isExpandedList[index] ? null : 2,
-                                  overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
-                                ),
-                                const SizedBox(height: 16),
-                                Center(
-                                  child: SizedBox(
-                                    width: 350,
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              final fileUrl =
-                                                  "http://192.168.1.78:5000/${resource['url']}";
-                                              print("URL: $fileUrl");
-                                              _openPDF(fileUrl, resource['title']);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color(0xff323465),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    children: [
+                                      const Icon(Icons.label_important_outline),
+                                      Text(
+                                        resource['tags'] ?? 'No Tags',
+                                        style: const TextStyle(fontSize: 15),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    _isExpandedList[index]
+                                        ? resource['desc']
+                                        : resource['desc'],
+                                    maxLines: _isExpandedList[index] ? null : 2,
+                                    overflow: _isExpandedList[index] ? TextOverflow.visible : TextOverflow.ellipsis,
+                                  ),
+                                  const SizedBox(height: 16),
+                                  Center(
+                                    child: SizedBox(
+                                      width: 350,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                final fileUrl =
+                                                    "http://192.168.1.78:5000/${resource['url']}";
+                                                print("URL: $fileUrl");
+                                                _openPDF(fileUrl, resource['title']);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: const Color(0xff323465),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
                                               ),
-                                            ),
-                                            icon: const Icon(
-                                              Icons.picture_as_pdf_outlined,
-                                              size: 18,
-                                              color: Colors.white,
-                                            ),
-                                            label: const Text(
-                                              'View',
-                                              style: TextStyle(fontSize: 15, color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 40),
-                                        Expanded(
-                                          child: ElevatedButton.icon(
-                                            onPressed: () {
-                                              final fileUrl =
-                                                  "http://46.250.248.179:5000/${resource['url']}";
-                                              final customPath =
-                                                  "/storage/emulated/0/Download/${resource['url']}";
-                                              print('Download URL: $fileUrl');
-                                              downloadPdf(fileUrl, customPath);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              padding: EdgeInsets.symmetric(vertical: 10),
-                                              backgroundColor: const Color(0xff323465),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                              icon: const Icon(
+                                                Icons.picture_as_pdf_outlined,
+                                                size: 18,
+                                                color: Colors.white,
                                               ),
-                                            ),
-                                            icon: const Icon(
-                                              Icons.file_download_outlined,
-                                              size: 18,
-                                              color: Colors.white,
-                                            ),
-                                            label: const Text('Download',
+                                              label: const Text(
+                                                'View',
                                                 style: TextStyle(fontSize: 15, color: Colors.white),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                          const SizedBox(width: 40),
+                                          Expanded(
+                                            child: ElevatedButton.icon(
+                                              onPressed: () {
+                                                final fileUrl =
+                                                    "http://46.250.248.179:5000/${resource['url']}";
+                                                final customPath =
+                                                    "/storage/emulated/0/Download/${resource['url']}";
+                                                print('Download URL: $fileUrl');
+                                                downloadPdf(fileUrl, customPath);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                padding: EdgeInsets.symmetric(vertical: 10),
+                                                backgroundColor: const Color(0xff323465),
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                              icon: const Icon(
+                                                Icons.file_download_outlined,
+                                                size: 18,
+                                                color: Colors.white,
+                                              ),
+                                              label: const Text('Download',
+                                                  style: TextStyle(fontSize: 15, color: Colors.white),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                  ],
+                                    ],
+                              ),
                             ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
+      ),
 
 
       //   ),

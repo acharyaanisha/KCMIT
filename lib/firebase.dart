@@ -172,7 +172,7 @@ class FirebaseApi {
     // if (FCMToken != null) {
     //   await subscribeToRoleBasedTopics(FCMToken);
     // }
-    await subscribeToTopics();
+    // await subscribeToTopics();
     await initPushNotifications();
     await initLocalNotifications();
   }

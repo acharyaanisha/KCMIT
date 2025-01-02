@@ -79,14 +79,14 @@ class _StudentSettingState extends State<StudentSetting> {
 
               SizedBox(height: 20),
 
-              TextButton(onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                );
-              },
+              TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
                   child: Row(
                     children: [
                       Icon(Icons.logout,color: Color(0xffEE1B08),),

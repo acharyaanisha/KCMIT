@@ -80,6 +80,10 @@
     </dict>
 
     <key>UIBackgroundModes</key>
+
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Allow access to photos</string>
+
     <array>
         <string>fetch</string>
         <string>remote-notification</string>

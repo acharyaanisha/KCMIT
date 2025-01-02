@@ -1,16 +1,53 @@
 import 'dart:convert';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:kcmit/view/authentication/loginPage.dart';
 
 class studentTokenProvider with ChangeNotifier {
   String? _token;
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
   String? get token => _token;
-  final _firebaseMessaging = FirebaseMessaging.instance;
 
+  Future<void> setToken(String token) async {
+    _token = token;
+    if (_token != null) {
+      await _storage.write(key: 'jwt_token', value: token);
+    } else {
+      await _storage.delete(key: 'jwt_token');
+    }
+    await _checkTokenExpiryAndLogoutIfNeeded();
+    notifyListeners();
+  }
+
+  Future<void> loadToken() async {
+    _token = await _storage.read(key: 'jwt_token');
+    await _checkTokenExpiryAndLogoutIfNeeded();
+    notifyListeners();
+  }
+
+  Future<void> _checkTokenExpiryAndLogoutIfNeeded() async {
+    if (_token != null && JwtDecoder.isExpired(_token!)) {
+      print("Token has expired. Logging out...");
+      await _logout();
+    }
+  }
+
+  Future<void> _logout() async {
+    _token = null;
+    await _storage.delete(key: 'jwt_token');
+    notifyListeners();
+  }
+
+  Future<void> clearTokenAndLogout(BuildContext context) async {
+    await _logout();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+          (route) => false,
+    );
+  }
 
   Future<List<String>> getRoleFromToken(String token) async {
     _token = token;
@@ -28,7 +65,6 @@ class studentTokenProvider with ChangeNotifier {
       throw Exception("Invalid payload");
     }
 
-
     if (payloadMap.containsKey('role') && payloadMap['role'] is List) {
       print("Roles found in the token: ${payloadMap['role']}");
       return List<String>.from(payloadMap['role']);
@@ -36,72 +72,5 @@ class studentTokenProvider with ChangeNotifier {
       print("No 'role' found in the token payload");
       return [];
     }
-  }
-
-  // Future<void> subscribeToRoleBasedTopics(String token) async {
-  //   try {
-  //     print("Subscribed to topic:");
-  //
-  //     List<String> roles = await getRoleFromToken(token);
-  //     print("Subscribed to topic:");
-  //
-  //
-  //     for (String role in roles) {
-  //       await _firebaseMessaging.subscribeToTopic(role);
-  //       print("Subscribed to topic: $role");
-  //     }
-  //   } catch (e) {
-  //     print("Error subscribing to topics: $e");
-  //   }
-  // }
-  //
-  // Future<void> initNotifications() async {
-  //   await _firebaseMessaging.requestPermission();
-  //   final FCMToken = await _firebaseMessaging.getToken();
-  //
-  //   print("FCM Token: $FCMToken");
-  //
-  //   if (FCMToken != null) {
-  //     await subscribeToRoleBasedTopics(FCMToken);
-  //   }
-  //
-  // }
-
-  Future<void> setToken(String token) async {
-    _token = token;
-    if (_token != null) {
-      await _storage.write(key: 'jwt_token', value: token);
-    } else {
-      await _storage.delete(key: 'jwt_token');
-    }
-
-    // print("Token: $token");
-
-    _checkTokenExpiry();
-    notifyListeners();
-  }
-
-  void _checkTokenExpiry() {
-    if (_token != null && JwtDecoder.isExpired(_token!)) {
-      print("Token has expired. Logging out...");
-      _logout();
-    }
-  }
-
-  Future<void> loadToken() async {
-    _token = await _storage.read(key: 'jwt_token');
-    if (_token != null && JwtDecoder.isExpired(_token!)) {
-      print("Token has expired. Logging out...");
-      _logout();
-    } else {
-      notifyListeners();
-    }
-  }
-
-
-  void _logout() {
-    _token = null;
-    _storage.delete(key: 'jwt_token');
-    notifyListeners();
   }
 }

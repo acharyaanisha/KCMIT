@@ -34,6 +34,8 @@ class _StProfileState extends State<StProfile> {
   Future<void> fetchUserData() async {
     final token = context.read<studentTokenProvider>().token;
     final url = Config.getStudentProfile();
+
+    print("url:$url");
     try {
       final response = await http.get(
         Uri.parse(url),
@@ -43,10 +45,12 @@ class _StProfileState extends State<StProfile> {
         },
       );
 
+      print("Response:${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           studentProfile = StudentProfile.fromJson(jsonResponse['data']);
+          print("Profile:$studentProfile");
           errorMessage = '';
           isLoading = false;
         });
@@ -78,29 +82,19 @@ class _StProfileState extends State<StProfile> {
             centerTitle: true,
             elevation: 0,
 
-            // actions: [
-            //   IconButton(onPressed: (){
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(builder: (_) => EditProfile()),
-            //     );
-            //   }, icon: Icon(Icons.edit)),
-            // ],
+            actions: [
+              IconButton(onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => EditProfile()),
+                );
+              }, icon: Icon(Icons.edit)),
+            ],
 
           ),
         ),
       ),
       body: Container(
-        // decoration: BoxDecoration(
-        //   gradient: LinearGradient(
-        //     colors: [
-        //       Color(0xff323465),
-        //       Color(0xffC82025),
-        //       ],
-        //     begin: Alignment.topLeft,
-        //     end: Alignment.bottomRight,
-        //   ),
-        // ),
         child: isLoading
             ? const Center(
           child: CircularProgressIndicator(
@@ -136,7 +130,7 @@ class _StProfileState extends State<StProfile> {
                       child: Image.network(
                         studentProfile!.profilePicture!.startsWith('http')
                             ? studentProfile!.profilePicture!
-                            : "http://192.168.1.78:5000/${studentProfile!.profilePicture!}",
+                            : "http://192.168.1.64:5000/${studentProfile!.profilePicture!}",
                         width: 150,
                         height: 150,
                         fit: BoxFit.cover,
@@ -235,26 +229,20 @@ class _StProfileState extends State<StProfile> {
                 // Logout Button
                 ElevatedButton.icon(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => const LoginPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => const LoginPage()),
+                          (Route<dynamic> route) => false,
                     );
                   },
-                  icon: const Icon(Icons.logout,color: Colors.white,),
-                  label: const Text("Log Out",
-                    style: TextStyle(
-                        color: Colors.white
-                    ),
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    "Log Out",
+                    style: TextStyle(color: Colors.white),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:   Color(0xff323465),
-                    // backgroundColor:  Color(0xff323465),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 10,
-                    ),
+                    backgroundColor: Color(0xff323465),
+                    padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),

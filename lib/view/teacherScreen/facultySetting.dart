@@ -81,14 +81,14 @@ class _FacultySettingState extends State<FacultySetting> {
 
               SizedBox(height: 20),
 
-              TextButton(onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginPage(),
-                  ),
-                );
-              },
+              TextButton(
+                onPressed: () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => const LoginPage()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
                 child: Row(
                   children: [
                     Icon(Icons.logout,color: Color(0xffEE1B08),),
@@ -102,41 +102,6 @@ class _FacultySettingState extends State<FacultySetting> {
                   ],
                 ),
               ),
-
-              // ElevatedButton.icon(
-              //   onPressed: () {
-              //     Navigator.pushReplacement(
-              //       context,
-              //       MaterialPageRoute(
-              //         builder: (context) => const LoginPage(),
-              //       ),
-              //     );
-              //   },
-              //   icon: const Icon(
-              //     Icons.logout,
-              //     // Icons.logout,
-              //     color: Color(0xffEE1B08),),
-              //   label: const Text("Log Out",
-              //     style: TextStyle(
-              //         color: Color(0xffEE1B08)
-              //     ),
-              //   ),
-              //   style: ElevatedButton.styleFrom(
-              //     backgroundColor:  Colors.white,
-              //     // backgroundColor:  Color(0xff323465),
-              //     padding: const EdgeInsets.symmetric(
-              //       horizontal: 50,
-              //       vertical: 3,
-              //     ),
-              //     // shape: RoundedRectangleBorder(
-              //     //   borderRadius: BorderRadius.circular(50),
-              //     //   side: BorderSide.none,
-              //     // ),
-              //     textStyle: const TextStyle(
-              //       fontSize: 16,
-              //     ),
-              //   ),
-              // ),
 
             ],
           ),

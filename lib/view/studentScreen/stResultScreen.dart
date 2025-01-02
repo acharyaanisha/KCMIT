@@ -27,6 +27,15 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
     fetchResult();
   }
 
+  Future<void> _refreshData() async {
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      fetchResult();
+    });
+  }
+
   Future<void> fetchResult() async {
     final token = context.read<studentTokenProvider>().token;
     final requestBody = jsonEncode({'examSetupUuid': '${widget.examSetupUuid}'});
@@ -81,45 +90,48 @@ class _StudentResultScreenState extends State<StudentResultScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 15.0,left: 15,right: 15),
-              child: Center(
-                child: DataTable(
-                  // columnSpacing: 30,
-                  headingRowHeight: 50,
-                  dataRowHeight:MediaQuery.of(context).size.height*0.08,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black, width: 2),
-                    borderRadius: BorderRadius.circular(8.0),
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15.0,left: 15,right: 15),
+                child: Center(
+                  child: DataTable(
+                    // columnSpacing: 30,
+                    headingRowHeight: 50,
+                    dataRowHeight:MediaQuery.of(context).size.height*0.08,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.black, width: 2),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    columns: const [
+                      DataColumn(
+                          label: Text('Subject',
+                              style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14))),
+                      DataColumn(
+                          label: Text('Obtain\nMarks',
+                              style:TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
+                      DataColumn(
+                          label: Text('Remarks',
+                              style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
+                    ],
+                    rows: examResult.map((examResult) {
+                      final subject = examResult.subject;
+                      final obtainedMarks = examResult.obtainedMarks.toString();
+                      final remarks = examResult.remarks;
+                      return DataRow(cells: [
+                        DataCell(Text(subject,style: TextStyle(fontSize: 12),)),
+                        DataCell(Text(obtainedMarks,style: TextStyle(fontSize: 12),)),
+                        DataCell(Text(remarks,style: TextStyle(fontSize: 12),)),
+                      ]);
+                    }).toList(),
                   ),
-                  columns: const [
-                    DataColumn(
-                        label: Text('Subject',
-                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14))),
-                    DataColumn(
-                        label: Text('Obtain\nMarks',
-                            style:TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
-                    DataColumn(
-                        label: Text('Remarks',
-                            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13))),
-                  ],
-                  rows: examResult.map((examResult) {
-                    final subject = examResult.subject;
-                    final obtainedMarks = examResult.obtainedMarks.toString();
-                    final remarks = examResult.remarks;
-                    return DataRow(cells: [
-                      DataCell(Text(subject,style: TextStyle(fontSize: 12),)),
-                      DataCell(Text(obtainedMarks,style: TextStyle(fontSize: 12),)),
-                      DataCell(Text(remarks,style: TextStyle(fontSize: 12),)),
-                    ]);
-                  }).toList(),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

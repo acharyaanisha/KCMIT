@@ -58,12 +58,13 @@ class Config{
 
 
   // Faculty Member
-  static const String _stFacultyMemberListEndpoint = "api/faculty/list";
+  static const String _stFacultyMemberListEndpoint = "api/faculty/list/app";
+  // static const String _stFacultyMemberListEndpoint = "api/faculty/list";
 
   static String getStFacultyMemberList() => '$baseUrl/$_stFacultyMemberListEndpoint';
 
   // Notices
-  static const String _stNoticesEndpoint = "api/notice/viewAll";
+  static const String _stNoticesEndpoint = "api/notice/list/app";
 
   static String getStNotices() => '$baseUrl/$_stNoticesEndpoint';
 
@@ -95,4 +96,63 @@ class Config{
   static const String _resultEndpoint = "api/result/student/view";
 
   static String getResult() => '$baseUrl/$_resultEndpoint';
+
+  // Course View Student
+  static const String _viewCourseEndpoint = "api/course/view/student/me";
+
+  static String getCourse() => '$baseUrl/$_viewCourseEndpoint';
+
+  // Thread View Student
+  static const String _viewThreadEndpoint = "api/thread/student/view";
+
+  static String getThreadView() => '$baseUrl/$_viewThreadEndpoint';
+
+  static const String _postThreadEndpoint = "api/thread/student/post";
+
+  static String getThreadPost() => '$baseUrl/$_postThreadEndpoint';
+
+  static const String _commentThreadEndpoint = "api/thread/student/comment";
+
+  static String getThreadComment() => '$baseUrl/$_commentThreadEndpoint';
+
+  static const String _viewCommentThreadEndpoint = "api/thread/comments";
+
+  static String getThreadCommentView() => '$baseUrl/$_viewCommentThreadEndpoint';
+
+  static const String _likeThreadEndpoint = "api/thread/student/like";
+
+  static String getThreadLike() => '$baseUrl/$_likeThreadEndpoint';
+
+  static const String _viewOneThreadEndpoint = "api/thread/view";
+
+  static String getThreadViewComment() => '$baseUrl/$_viewOneThreadEndpoint';
+
+  // Thread Faculty
+  static const String _viewSemesterEndpoint = "api/faculty/view/coursesAndSemester";
+
+  static String getSemester() => '$baseUrl/$_viewSemesterEndpoint';
+
+  static const String _threadViewEndpoint = "api/thread/faculty/view";
+
+  static String getThread() => '$baseUrl/$_threadViewEndpoint';
+
+  static const String _ThreadpostEndpoint = "api/thread/faculty/post";
+
+  static String getPostThread() => '$baseUrl/$_ThreadpostEndpoint';
+  //
+  static const String _commentThreadFacEndpoint = "api/thread/faculty/comment";
+
+  static String getThreadCommentFac() => '$baseUrl/$_commentThreadFacEndpoint';
+  //
+  static const String _viewCommentThreadFacEndpoint = "api/thread/comments";
+
+  static String getThreadCommentViewFac() => '$baseUrl/$_viewCommentThreadFacEndpoint';
+
+  static const String _likeThreadFacultyEndpoint = "api/thread/faculty/like";
+
+  static String getThreadLikeFaculty() => '$baseUrl/$_likeThreadFacultyEndpoint';
+
+  static const String _viewOneThreadFacEndpoint = "api/thread/faculty/me";
+
+  static String getThreadViewCommentFac() => '$baseUrl/$_viewOneThreadFacEndpoint';
 }

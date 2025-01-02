@@ -12,6 +12,7 @@ import 'package:kcmit/view/Resource.dart';
 import 'package:kcmit/view/teacherScreen/FCalendar.dart';
 import 'package:kcmit/view/teacherScreen/factRoutine.dart';
 import 'package:kcmit/view/teacherScreen/faculltyProfile.dart';
+import 'package:kcmit/view/teacherScreen/semesterList.dart';
 
 class TeachHomeScreen extends StatefulWidget {
   const TeachHomeScreen({super.key});
@@ -202,20 +203,21 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           // "assets/attendance.png",
                           "Attendance",
                           StudentAttendance(),
-                            Colors.deepPurple.shade300
+                            Colors.amber.shade300
                         ),IconAndText(
                           Icons.forum_outlined,
                           // "assets/attendance.png",
-                          "Attendance",
-                          StudentAttendance(),
-                            Colors.deepPurple.shade300
-                        ),IconAndText(
-                          Icons.check_circle_outline,
-                          // "assets/attendance.png",
-                          "Attendance",
-                          StudentAttendance(),
-                            Colors.deepPurple.shade300
+                          "Threads",
+                            semesterScreen(),
+                            Colors.red.shade300
                         ),
+                        // IconAndText(
+                        //   Icons.check_circle_outline,
+                        //   // "assets/attendance.png",
+                        //   "Attendance",
+                        //   StudentAttendance(),
+                        //     Colors.deepPurple.shade300
+                        // ),
                       ],
                     ),
                     SizedBox(height: 20,),
@@ -241,7 +243,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           : ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: noticeList.length,
+                        itemCount: 5,
                         itemBuilder: (context, index) {
                           final noticeItem = noticeList[index];
                           return GestureDetector(

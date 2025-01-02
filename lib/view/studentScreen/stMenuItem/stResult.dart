@@ -29,6 +29,15 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
     fetchExamList();
   }
 
+  Future<void> _refreshData() async {
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      fetchExamList();
+    });
+  }
+
 
   Future<void> fetchExamList() async {
     final token = context.read<studentTokenProvider>().token;
@@ -102,134 +111,138 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // Assessment Tab
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            // Assessment Tab
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
 
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemCount: examList.length,
-                    itemBuilder: (context, index) {
-                      final row = index ~/ 2;
-                      final col = index % 2;
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                      ),
+                      itemCount: examList.length,
+                      itemBuilder: (context, index) {
+                        final row = index ~/ 2;
+                        final col = index % 2;
 
-                      final color = ((row % 2 == 0 && col == 0) || (row % 2 == 1 && col == 1))
-                          ? Color(0xff3a3e79)
-                          : Colors.red.shade400;
+                        final color = ((row % 2 == 0 && col == 0) || (row % 2 == 1 && col == 1))
+                            ? Color(0xff3a3e79)
+                            : Colors.red.shade400;
 
-                      final exam = examList[index];
-                      String examSetupUuid = exam['examSetupUUid'];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => StudentResultScreen(examSetupUuid: examSetupUuid,)),
-                          );
-                        },
-                        child: Card(
-                          color: color,
-                          elevation: 5,
+                        final exam = examList[index];
+                        String examSetupUuid = exam['examSetupUUid'];
+                        print("uuid:$examSetupUuid");
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => StudentResultScreen(examSetupUuid: examSetupUuid,)),
+                            );
+                          },
+                          child: Card(
+                            color: color,
+                            elevation: 5,
 
-                          child: Stack(
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(15.0),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(50.0),
-                                  child: Icon(Icons.assignment_outlined,size: 70,
-                                            color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                bottom: 0,
-                                left: 0,
-                                right: 0,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.5),
-                                    borderRadius: BorderRadius.circular(12)
-                                  ),
-                                  child:
-                                  Text(
-                                    exam['examSetupName'],
-                                    style: const TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                            child: Stack(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(50.0),
+                                    child: Icon(Icons.assignment_outlined,size: 70,
+                                              color: Colors.white,
                                     ),
-                                    textAlign: TextAlign.left,
                                   ),
                                 ),
-                              ),
-                            ],
+                                Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  right: 0,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withOpacity(0.5),
+                                      borderRadius: BorderRadius.circular(12)
+                                    ),
+                                    child:
+                                    Text(
+                                      exam['examSetupName'],
+                                      style: const TextStyle(
+                                        fontSize: 12.0,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      textAlign: TextAlign.left,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  )
+                        );
+                      },
+                    )
 
 
-                  // ResultSection(
-                  //   title: "",
-                  //   iconsAndTexts: [
-                  //     IconAndText(
-                  //         Icons.assignment_outlined,
-                  //         examList['name'],
-                  //         StudentResultScreen(),
-                  //         Colors.deepPurple.shade300
-                  //     ),
-                  //     IconAndText(
-                  //         Icons.assignment_outlined,
-                  //         "Result",
-                  //         StudentResultScreen(),
-                  //         Colors.red.shade300
-                  //     ),
-                  //     IconAndText(
-                  //         Icons.assignment_outlined,
-                  //         "Result",
-                  //         StudentResultScreen(),
-                  //         Colors.green.shade300
-                  //     ),
-                  //     IconAndText(
-                  //         Icons.assignment_outlined,
-                  //         "Result",
-                  //         StudentResultScreen(),
-                  //         Colors.blue.shade300
-                  //     ),
-                  //     IconAndText(
-                  //         Icons.assignment_outlined,
-                  //         "Result",
-                  //         StudentResultScreen(),
-                  //         Colors.orange.shade300
-                  //     ),
-                  //   ],
-                  // ),
+                    // ResultSection(
+                    //   title: "",
+                    //   iconsAndTexts: [
+                    //     IconAndText(
+                    //         Icons.assignment_outlined,
+                    //         examList['name'],
+                    //         StudentResultScreen(),
+                    //         Colors.deepPurple.shade300
+                    //     ),
+                    //     IconAndText(
+                    //         Icons.assignment_outlined,
+                    //         "Result",
+                    //         StudentResultScreen(),
+                    //         Colors.red.shade300
+                    //     ),
+                    //     IconAndText(
+                    //         Icons.assignment_outlined,
+                    //         "Result",
+                    //         StudentResultScreen(),
+                    //         Colors.green.shade300
+                    //     ),
+                    //     IconAndText(
+                    //         Icons.assignment_outlined,
+                    //         "Result",
+                    //         StudentResultScreen(),
+                    //         Colors.blue.shade300
+                    //     ),
+                    //     IconAndText(
+                    //         Icons.assignment_outlined,
+                    //         "Result",
+                    //         StudentResultScreen(),
+                    //         Colors.orange.shade300
+                    //     ),
+                    //   ],
+                    // ),
 
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
 
-          // Board Tab
-          Padding(
-            padding: const EdgeInsets.all(25.0),
-            child: SingleChildScrollView(
-              child: Text("Board Result Content"),
+            // Board Tab
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: SingleChildScrollView(
+                child: Text("Board Result Content"),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

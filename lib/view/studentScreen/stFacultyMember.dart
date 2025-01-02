@@ -22,6 +22,15 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
     fetchMemberList();
   }
 
+  Future<void> _refreshData() async {
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    setState(() {
+      fetchMemberList();
+    });
+  }
+
   Future<void> fetchMemberList() async {
     final url = Config.getStFacultyMemberList();
     try {
@@ -180,79 +189,82 @@ class _FacultyMemberListState extends State<FacultyMemberList> {
         ),
       ),
       body:
-      isLoading
-          ? Padding(
-        padding: const EdgeInsets.all(100.0),
-        child: const Center(child: CircularProgressIndicator()),
-      )
-          : memberList.isEmpty
-          ? Center(
-        child: errorMessage.isNotEmpty
-            ? (errorMessage.contains('no_data.png')
-            ? Image.asset(errorMessage)
-            : Image.asset(errorMessage))
-            : Image.asset(errorMessage),
-      )   :
-      Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-          ),
-          itemCount: memberList.length,
-          itemBuilder: (context, index) {
-            final member = memberList[index];
-            return GestureDetector(
-              onTap: (){_showDialog(member['profile_pic'],member['name'],member['email'],member['mobileNumber'],member['qualification'],member['specialization']);},
+      RefreshIndicator(
+        onRefresh: _refreshData,
+        child: isLoading
+            ? Padding(
+          padding: const EdgeInsets.all(100.0),
+          child: const Center(child: CircularProgressIndicator()),
+        )
+            : memberList.isEmpty
+            ? Center(
+          child: errorMessage.isNotEmpty
+              ? (errorMessage.contains('no_data.png')
+              ? Image.asset(errorMessage)
+              : Image.asset(errorMessage))
+              : Image.asset(errorMessage),
+        )   :
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+            ),
+            itemCount: memberList.length,
+            itemBuilder: (context, index) {
+              final member = memberList[index];
+              return GestureDetector(
+                onTap: (){_showDialog(member['profile_pic'],member['name'],member['email'],member['mobileNumber'],member['qualification'],member['specialization']);},
 
-              child: Card(
-                color: Colors.grey.shade50,
-                elevation: 5,
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(15.0),
-                      child: Image.network(
-                        // member['profile_pic'].startsWith('http')
-                        //     ? member['profile_pic']
-                        //     :
-                        "http://kcmit-api.kcmit.edu.np/${member['profile_pic']}",
-                        fit: BoxFit.cover,
-                        width: double.infinity,
-                        height: double.infinity,
-                        loadingBuilder: (context, child, loadingProgress) {
-                          if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
-                        },
-                        errorBuilder: (context, error, stackTrace) => Center(child: const Icon(Icons.person_outlined,size: 100,)),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                        decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.5),
-                            borderRadius: BorderRadius.circular(12)
+                child: Card(
+                  color: Colors.grey.shade50,
+                  elevation: 5,
+                  child: Stack(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(15.0),
+                        child: Image.network(
+                          // member['profile_pic'].startsWith('http')
+                          //     ? member['profile_pic']
+                          //     :
+                          "http://kcmit-api.kcmit.edu.np/${member['profile_pic']}",
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) return child;
+                            return const Center(child: CircularProgressIndicator());
+                          },
+                          errorBuilder: (context, error, stackTrace) => Center(child: const Icon(Icons.person_outlined,size: 100,)),
                         ),
-                        child: Text(
-                         member['name'],
-                          style: const TextStyle(
-                            fontSize: 15.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                          decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(12)
                           ),
-                          textAlign: TextAlign.left,
+                          child: Text(
+                           member['name'],
+                            style: const TextStyle(
+                              fontSize: 15.0,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.left,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

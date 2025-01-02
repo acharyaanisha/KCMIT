@@ -82,9 +82,10 @@ class _StudentChangePasswordState extends State<StudentChangePassword> {
         });
 
         Future.delayed(const Duration(seconds: 1), () {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
             context,
-            MaterialPageRoute(builder: (context) => LoginAsStudent()),
+            MaterialPageRoute(builder: (context) => const LoginAsStudent()),
+                (Route<dynamic> route) => false,
           );
         });
       } else {

@@ -39,7 +39,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
           'Authorization': 'Bearer $token',
         },
       );
-
+      print("Events: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         print("Events: $jsonResponse");
