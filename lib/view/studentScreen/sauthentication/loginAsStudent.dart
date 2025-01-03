@@ -124,9 +124,10 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
           errorMessage = null;
         });
 
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => StHomeMain()),
+              (Route<dynamic> route) => false,
         );
 
         await saveLoginState(token);

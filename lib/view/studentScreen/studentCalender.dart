@@ -1,9 +1,10 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class StudentCalendarScreen extends StatefulWidget {
   const StudentCalendarScreen({super.key});
@@ -13,6 +14,8 @@ class StudentCalendarScreen extends StatefulWidget {
 }
 
 class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
+
+  DateTime focusedDay = DateTime.now();
   DateTime? selectedDate;
   List<dynamic> _events = [];
   List<dynamic> filteredEvents = [];
@@ -45,7 +48,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         setState(() {
           _events = jsonResponse['data'];
-          filterEvents(); // Update filtered events after fetching data
+          filterEvents();
           isLoading = false;
         });
       } else {
@@ -81,7 +84,7 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
   void onDateChanged(DateTime date) {
     setState(() {
       selectedDate = date;
-      filterEvents(); // Update filtered events when date changes
+      filterEvents();
     });
   }
 
@@ -182,12 +185,83 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
         child: Column(
           children: [
             Container(
-              height: 300,
-              child: CalendarDatePicker(
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                onDateChanged: onDateChanged,
+              height: MediaQuery.of(context).size.height * 0.5,
+              child: TableCalendar(
+                firstDay: DateTime(2000),
+                lastDay: DateTime(2100),
+                focusedDay: focusedDay,
+                selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(() {
+                    this.selectedDate = selectedDay;
+                    this.focusedDay = focusedDay;
+                  });
+                  filterEvents();
+                },
+                onPageChanged: (focusedDay) {
+                  setState(() {
+                    this.focusedDay = focusedDay;
+                  });
+                  filterEvents();
+                },
+                eventLoader: (day) {
+                  return filteredEvents.where((event) {
+                    DateTime eventDate = DateTime.parse(event['eventDate']);
+                    return isSameDay(day, eventDate);
+                  }).toList();
+                },
+                calendarStyle: CalendarStyle(
+                  todayDecoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.5),
+                    shape: BoxShape.rectangle,
+                  ),
+                  selectedDecoration: BoxDecoration(
+                    color: Colors.orange,
+                    shape: BoxShape.rectangle,
+                  ),
+                  // eventTextStyle: TextStyle(
+                  //   color: Colors.white,
+                  // ),
+                ),
+                calendarBuilders: CalendarBuilders(
+                  markerBuilder: (context, date, events) {
+                    if (events.isNotEmpty) {
+                      var event = events.first as Map<String, dynamic>;
+
+                      String eventCategory = event['eventCategory']['name'];
+                      Color markerColor;
+
+
+                      switch (eventCategory) {
+                        case 'Leave':
+                          markerColor = Colors.red;
+                          break;
+                        case 'Examination':
+                          markerColor = Colors.green;
+                          break;
+                        case 'Sports Week':
+                          markerColor = Colors.blue;
+                          break;
+                        default:
+                          markerColor = Colors.grey;
+                      }
+                      return Container(
+                        height: MediaQuery.of(context).size.height * 0.07,
+                        width: MediaQuery.of(context).size.height * 0.07,
+                        decoration: BoxDecoration(
+                          color: markerColor.withOpacity(0.6),
+                          shape: BoxShape.rectangle,
+                        ),
+
+                      );
+                    }
+                    return SizedBox.shrink();
+                  },
+                ),
+                headerStyle: HeaderStyle(
+                  formatButtonVisible: false,
+                  titleCentered: true,
+                ),
               ),
             ),
             const SizedBox(height: 5),
@@ -252,5 +326,3 @@ class _StudentCalendarScreenState extends State<StudentCalendarScreen> {
     );
   }
 }
-
-

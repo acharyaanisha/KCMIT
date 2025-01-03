@@ -33,6 +33,18 @@ class _StHomeScreenState extends State<StHomeScreen> {
   String errorMessage = '';
   bool isLoading = true;
   List<bool> _isExpandedList = [];
+  int _currentindex = 0;
+
+  List<String> captions = [
+    "College Premises",
+    "Principal",
+    "Freshers",
+    "Teachers Day Celebration",
+    "Faculty Member",
+    "Sports",
+    "Students",
+  ];
+
 
 
   @override
@@ -178,41 +190,111 @@ class _StHomeScreenState extends State<StHomeScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  height: 250,
-                  width: MediaQuery.of(context).size.width,
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      height: 200.0,
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      aspectRatio: 16 / 9,
-                      autoPlayInterval: Duration(seconds: 5),
-                    ),
-                    items: imageList.map((imageUrl) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                            width: MediaQuery.of(context).size.width * 0.9,
-                            margin: EdgeInsets.symmetric(horizontal: 5.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.asset(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                height: 250,
-                                width: MediaQuery.of(context).size.width,
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.33,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        // Carousel Slider
+                        CarouselSlider(
+                          options: CarouselOptions(
+                            height: MediaQuery.of(context).size.height * 0.28,
+                            autoPlay: true,
+                            enlargeCenterPage: true,
+                            aspectRatio: 16 / 9,
+                            autoPlayInterval: Duration(seconds: 5),
+                            pageSnapping: true,
+                            initialPage: 0,
+                            onPageChanged: (index, reason) {
+                              setState(() {
+                                _currentindex = index;
+                              });
+                            },
+                          ),
+                          items: imageList.map((imageUrl) {
+                            int index = imageList.indexOf(imageUrl);
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                  width: MediaQuery.of(context).size.width * 0.9,
+                                  height: MediaQuery.of(context).size.height * 0.9,
+                                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 10,
+                                        offset: Offset(0, 4),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children:[
+                                      ClipRRect(
+                                      borderRadius: BorderRadius.circular(0),
+                                      child: Image.asset(
+                                        imageUrl,
+                                        fit: BoxFit.cover,
+                                        height: MediaQuery.of(context).size.height,
+                                        width: MediaQuery.of(context).size.width,
+                                      ),
+                                    ),
+                                      Positioned(
+                                        bottom: 0,
+                                        left: 0,
+                                        right: 0,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                                          decoration: BoxDecoration(
+                                              color: Colors.black.withOpacity(0.5),
+                                              borderRadius: BorderRadius.circular(0)
+                                          ),
+                                          child: Text(
+                                          captions[_currentindex],
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                          ),
+                                        ),)
+                                ]
+                                  ),
+                                );
+                              },
+                            );
+                          }).toList(),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.015,
+                        ),
+                        // Changing Circle Indicators
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(
+                            imageList.length,
+                                (index) => AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              margin: EdgeInsets.symmetric(horizontal: 3),
+                              height: MediaQuery.of(context).size.height * 0.004,
+                              width: _currentindex == index ? 20 : 10,
+                              decoration: BoxDecoration(
+                                color: _currentindex == index ? Color(0xff323465) : Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                          );
-                        },
-                      );
-                    }).toList(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+
                 ),
+
                 SizedBox(height: 10),
                 Section(
                   title: "Quick Navigation",
