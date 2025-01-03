@@ -34,6 +34,17 @@ class facultyTokenProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> isTokenExpired(String token) async {
+    try {
+      if (JwtDecoder.isExpired(token)) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return true; // If there's any issue with decoding, consider it expired
+    }
+  }
+
   Future<String> getRoleFromToken(String token) async {
     try {
       _token = token;

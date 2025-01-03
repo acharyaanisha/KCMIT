@@ -45,7 +45,7 @@ class _semesterScreenState extends State<semesterScreen> {
           'Authorization': 'Bearer $token',
         },
       );
-      print("URL: $url");
+      print("URL: $token");
       print("Response: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
@@ -97,7 +97,7 @@ class _semesterScreenState extends State<semesterScreen> {
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  // crossAxisSpacing: 7.0,
+                  crossAxisSpacing: 7.0,
                 ),
                 itemCount: semesterList.length,
                 itemBuilder: (context, index) {
@@ -146,9 +146,9 @@ class _semesterScreenState extends State<semesterScreen> {
                               ),
                               child:
                               Text(
-                                '(${semester['semester']})',
+                                '${semester['semester']}',
                                 style: const TextStyle(
-                                  fontSize: 12.0,
+                                  fontSize: 15.0,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),

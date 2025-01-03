@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StudentAttendance extends StatefulWidget {
@@ -25,7 +26,11 @@ class _StudentAttendanceState extends State<StudentAttendance> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text("Attendance"),
+            Container(
+              height: MediaQuery.of(context).size.height*0.8,
+              width: MediaQuery.of(context).size.width,
+                child: Image.asset('assets/no_data.png')
+            ),
           ],
         ),
       ),

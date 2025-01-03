@@ -182,12 +182,13 @@ class _CourseScreenState extends State<CourseScreen> {
                             : SingleChildScrollView(
                           // scrollDirection: Axis.horizontal,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 15.0,left: 15,right: 15,bottom: 10),
+                            padding: const EdgeInsets.only(top: 15.0,left: 15,right: 10,bottom: 10),
                             child: DataTable(
-                              headingRowHeight: 50,
-                              dataRowHeight:MediaQuery.of(context).size.height*0.08,
+                              headingRowHeight: MediaQuery.of(context).size.height*0.06,
+                              dataRowHeight:MediaQuery.of(context).size.height*0.09,
+                              columnSpacing:MediaQuery.of(context).size.width*0.1,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade400, width: 1),
+                                border: Border.all(color: Colors.grey.shade400, width: 2),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               columns: const [
@@ -205,7 +206,7 @@ class _CourseScreenState extends State<CourseScreen> {
                                 ),
                                 DataColumn(
                                   label: Text(
-                                    'Credit\nHour',
+                                    'Credit\nHour ',
                                     style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),

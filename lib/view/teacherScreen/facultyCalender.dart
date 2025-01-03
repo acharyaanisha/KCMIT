@@ -2,18 +2,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:kcmit/service/config.dart';
+import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:kcmit/view/teacherScreen/facultyToken.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class FCalendarScreen extends StatefulWidget {
-  const FCalendarScreen({super.key});
+class FacultyCalendarScreen extends StatefulWidget {
+  const FacultyCalendarScreen({super.key});
 
   @override
-  State<FCalendarScreen> createState() => _FCalendarScreenState();
+  State<FacultyCalendarScreen> createState() => _FacultyCalendarScreenState();
 }
 
-class _FCalendarScreenState extends State<FCalendarScreen> {
+class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
   DateTime? selectedDate;
   List<dynamic> _events = [];
   String errorMessage = '';
@@ -29,7 +29,7 @@ class _FCalendarScreenState extends State<FCalendarScreen> {
 
   Future<void> fetchEventData() async {
     final token = context.read<facultyTokenProvider>().token;
-    final url = Config.getEvent();
+    final url = Config.getFacultyEvent();
     print('Fetching data from $url');
 
     try {
@@ -40,7 +40,7 @@ class _FCalendarScreenState extends State<FCalendarScreen> {
           'Authorization': 'Bearer $token',
         },
       );
-
+      print("Events: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
         print("Events: $jsonResponse");
@@ -234,15 +234,6 @@ class _FCalendarScreenState extends State<FCalendarScreen> {
                                 "Date: ${event['eventDate']}\n"
                                     "Time: ${event['eventTime']}\n"
                                     "Location: ${event['location']}",
-                              ),
-                              trailing: Text(
-                                event['eventStatus'],
-                                style: TextStyle(
-                                  color: event['eventStatus'] == 'UPCOMING'
-                                      ? Colors.green
-                                      : Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
                               ),
                             ),
                           ),

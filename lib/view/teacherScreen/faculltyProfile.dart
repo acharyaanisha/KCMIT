@@ -140,7 +140,7 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
                           child: Image.network(
                             facultyProfile!.profile_pic!.startsWith('http')
                                 ? facultyProfile!.profile_pic!
-                                : "http://192.168.1.78:5000/${facultyProfile!.profile_pic!}",
+                                : "http://kcmit-api.kcmit.edu.np:5000/${facultyProfile!.profile_pic!}",
                             width: 150,
                             height: 150,
                             fit: BoxFit.cover,

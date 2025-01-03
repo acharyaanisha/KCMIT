@@ -92,6 +92,14 @@ class Config{
 
   static String getEvent() => '$baseUrl/$_eventEndpoint';
 
+  static const String _studentEventEndpoint = "api/event/listForStudent";
+
+  static String getStudentEvent() => '$baseUrl/$_studentEventEndpoint';
+
+  static const String _facultyEventEndpoint = "api/event/listForFaculty";
+
+  static String getFacultyEvent() => '$baseUrl/$_facultyEventEndpoint';
+
   // Result View Student
   static const String _resultEndpoint = "api/result/student/view";
 

@@ -4,6 +4,7 @@ import 'package:kcmit/view/Contact.dart';
 import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
 import 'package:kcmit/view/teacherScreen/facultyChangePassword.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FacultySetting extends StatefulWidget {
   const FacultySetting({super.key});
@@ -82,7 +83,12 @@ class _FacultySettingState extends State<FacultySetting> {
               SizedBox(height: 20),
 
               TextButton(
-                onPressed: () {
+                onPressed: () async {
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  await prefs.remove('username');
+                  await prefs.remove('password');
+                  await prefs.setBool('keepLoggedIn', false);
+
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginPage()),

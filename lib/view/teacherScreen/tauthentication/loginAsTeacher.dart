@@ -12,7 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginAsTeacher extends StatefulWidget {
-  const LoginAsTeacher({super.key});
+  final bool isLoggedOut;
+  const LoginAsTeacher({super.key,this.isLoggedOut= false});
 
   @override
   State<LoginAsTeacher> createState() => _LoginAsTeacherState();
@@ -27,8 +28,27 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
   String? errorMessage;
   String? successMessage;
   bool isLoading = false;
+  bool keepLoggedIn = false;
 
 
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.isLoggedOut) {
+      _loadLoginPreferences();
+    }
+  }
+
+  Future<void> _loadLoginPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      keepLoggedIn = prefs.getBool('keepLoggedIn') ?? false;
+      if (keepLoggedIn) {
+        usernameController.text = prefs.getString('username') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+      }
+    });
+  }
 
   Future<void> subscribeToRoleBasedTopics(String token) async {
     try {
@@ -87,6 +107,14 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+
+        if (keepLoggedIn) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('username', username);
+          await prefs.setString('password', password);
+          await prefs.setBool('keepLoggedIn', true);
+          await prefs.setString('token', token);
+        }
 
         print("Token: $token");
 
@@ -191,6 +219,8 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
                 ),
               ),
             SizedBox(height: 20.0),
+            _buildLoginOptions(),
+            SizedBox(height: 20.0),
             _buildLoginButton(),
             SizedBox(height: 10.0),
             _buildLoginAsStudent(),
@@ -203,6 +233,39 @@ class _LoginAsTeacherState extends State<LoginAsTeacher> {
     );
   }
 
+
+  Widget _buildLoginOptions() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Checkbox(
+              value: keepLoggedIn,
+              onChanged: (bool? value) {
+                setState(() {
+                  keepLoggedIn = value ?? false;
+                });
+              },
+            ),
+            const Text('Keep Login'),
+          ],
+        ),
+        // TextButton(
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => ForgetPassword()),
+        //     );
+        //   },
+        //   child: const Text(
+        //     'Reset password?',
+        //     style: TextStyle(color: Color(0xff323465)),
+        //   ),
+        // ),
+      ],
+    );
+  }
 
   Widget _buildTextField({
     required TextEditingController controller,

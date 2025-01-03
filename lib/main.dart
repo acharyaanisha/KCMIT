@@ -16,7 +16,7 @@ void main() async{
   await Firebase.initializeApp();
   await FirebaseApi().initNotifications();
 
-
+  // print("object:");
 
   // context.read<studentTokenProvider>().setToken(token);
   // context.read<studentTokenProvider>().getRoleFromToken(token);
@@ -34,7 +34,10 @@ void main() async{
         child:
         MyApp()
     ),
+
   );
+  // context.read<studentTokenProvider>().setToken(token);
+  // context.read<studentTokenProvider>().getRoleFromToken(token);
 }
 
 class MyApp extends StatefulWidget {

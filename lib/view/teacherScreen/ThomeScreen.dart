@@ -9,10 +9,13 @@ import 'package:kcmit/view/studentScreen/stAttendance.dart';
 import 'package:kcmit/view/studentScreen/stFacultyMember.dart';
 import 'package:kcmit/view/studentScreen/stNotices.dart';
 import 'package:kcmit/view/Resource.dart';
-import 'package:kcmit/view/teacherScreen/FCalendar.dart';
 import 'package:kcmit/view/teacherScreen/factRoutine.dart';
 import 'package:kcmit/view/teacherScreen/faculltyProfile.dart';
+import 'package:kcmit/view/teacherScreen/facultyCalender.dart';
+import 'package:kcmit/view/teacherScreen/facultyNotice.dart';
+import 'package:kcmit/view/teacherScreen/facultyToken.dart';
 import 'package:kcmit/view/teacherScreen/semesterList.dart';
+import 'package:provider/provider.dart';
 
 class TeachHomeScreen extends StatefulWidget {
   const TeachHomeScreen({super.key});
@@ -37,18 +40,20 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
 
   Future<void> fetchNoticeList() async {
     final url = Config.getStNotices();
+    final token = context.read<facultyTokenProvider>().token;
     try {
       final response = await http.get(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
         },
       );
       if (response.statusCode == 200) {
         final jsonResponse =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
-          noticeList = jsonResponse['notices'];
+          noticeList = jsonResponse['data'];
           _isExpandedList = List.filled(noticeList.length, false);
           isLoading = false;
         });
@@ -167,6 +172,13 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                       title: "Quick Navigation",
                       iconsAndTexts: [
                         IconAndText(
+                            Icons.forum_outlined,
+                            // "assets/attendance.png",
+                            "Threads",
+                            semesterScreen(),
+                            Colors.orange.shade300
+                        ),
+                        IconAndText(
                           Icons.timer_outlined,
                           // "assets/routine.png",
                           "Routine",
@@ -177,47 +189,34 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           Icons.circle_notifications_outlined,
                           // "assets/notice.png",
                           "Notices",
-                          StudentNotices(),
-                            Colors.orange.shade400
+                            FacultyNotices(),
+                            Colors.deepPurple.shade300
                         ),
                         IconAndText(
                           Icons.download_for_offline_outlined,
                           // "assets/resource.png",
                           "Resources",
                             Resource(),
-                            Colors.red.shade400
-                        ),
-                        IconAndText(
-                          Icons.calendar_month_outlined,
-                          "Calender",
-                            FCalendarScreen(),
-                            Colors.green.shade400
+                            Color(0xff8EB486)
                         ),
                         IconAndText(
                             Icons.person,
                             "Faculty",
                             FacultyMemberList(),
-                            Colors.deepPurple.shade300),
+                            Color(0xffA294F9)),
+                        IconAndText(
+                          Icons.calendar_month_outlined,
+                          "Calender",
+                            FacultyCalendarScreen(),
+                            Colors.green.shade400
+                        ),
                         IconAndText(
                           Icons.check_circle_outline,
                           // "assets/attendance.png",
                           "Attendance",
                           StudentAttendance(),
-                            Colors.amber.shade300
-                        ),IconAndText(
-                          Icons.forum_outlined,
-                          // "assets/attendance.png",
-                          "Threads",
-                            semesterScreen(),
                             Colors.red.shade300
                         ),
-                        // IconAndText(
-                        //   Icons.check_circle_outline,
-                        //   // "assets/attendance.png",
-                        //   "Attendance",
-                        //   StudentAttendance(),
-                        //     Colors.deepPurple.shade300
-                        // ),
                       ],
                     ),
                     SizedBox(height: 20,),
@@ -243,23 +242,20 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                           : ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
-                        itemCount: 5,
+                        itemCount: noticeList.length > 5 ? 5 : noticeList.length,
                         itemBuilder: (context, index) {
                           final noticeItem = noticeList[index];
                           return GestureDetector(
                             onTap: () {
                               setState(() {
-                                _isExpandedList[index] =
-                                !_isExpandedList[index];
+                                _isExpandedList[index] = !_isExpandedList[index];
                               });
                             },
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0.0, horizontal: 10.0),
+                              padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 10.0),
                               child: Card(
                                 color: Colors.grey.shade50,
-                                margin: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 5),
+                                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                                 elevation: 2,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15),
@@ -267,8 +263,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         noticeItem['title'],
@@ -297,9 +292,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                         _isExpandedList[index]
                                             ? noticeItem['desc']
                                             : noticeItem['desc'],
-                                        maxLines: _isExpandedList[index]
-                                            ? null
-                                            : 2,
+                                        maxLines: _isExpandedList[index] ? null : 2,
                                         overflow: _isExpandedList[index]
                                             ? TextOverflow.visible
                                             : TextOverflow.ellipsis,
@@ -312,27 +305,20 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                         Row(
                                           children: [
                                             GestureDetector(
-                                              onTap:(){
+                                              onTap: () {
                                                 _showImageDialog(noticeItem['fileURL']);
                                               },
                                               child: ClipRRect(
-                                                borderRadius:
-                                                BorderRadius.circular(
-                                                    8.0),
+                                                borderRadius: BorderRadius.circular(8.0),
                                                 child: Image.network(
-                                                  noticeItem['fileURL'] !=
-                                                      null &&
-                                                      noticeItem[
-                                                      'fileURL']
-                                                          .startsWith(
-                                                          'http')
+                                                  noticeItem['fileURL'] != null &&
+                                                      noticeItem['fileURL']
+                                                          .startsWith('http')
                                                       ? noticeItem['fileURL']
                                                       : "http://46.250.248.179:5000/${noticeItem['fileURL'] ?? ''}",
                                                   width: MediaQuery.of(context).size.width * 0.85,
-                                                  // height: 250,
                                                   fit: BoxFit.contain,
-                                                  errorBuilder: (context,
-                                                      error, stackTrace) {
+                                                  errorBuilder: (context, error, stackTrace) {
                                                     return Text("");
                                                   },
                                                 ),

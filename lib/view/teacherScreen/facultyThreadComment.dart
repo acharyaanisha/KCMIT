@@ -26,6 +26,7 @@ class _FacultyThreadCommentViewState extends State<FacultyThreadCommentView> {
   String? errorMessage;
   String? successMessage;
   bool isLoading = true;
+  bool isPosting = false;
 
   @override
   void initState() {
@@ -44,6 +45,11 @@ class _FacultyThreadCommentViewState extends State<FacultyThreadCommentView> {
   }
 
   Future<void> postComment(String threadId) async {
+
+    setState(() {
+      isPosting = true;
+    });
+
     final token = context.read<facultyTokenProvider>().token;
     final url = Config.getThreadCommentFac();
     final commentText = commentController.text.trim();
@@ -78,6 +84,11 @@ class _FacultyThreadCommentViewState extends State<FacultyThreadCommentView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error posting comment: $e')),
         );
+      }
+      finally {
+        setState(() {
+          isPosting = false;
+        });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -549,12 +560,16 @@ class _FacultyThreadCommentViewState extends State<FacultyThreadCommentView> {
                   ),
                 ),
                 // SizedBox(width: 8),
-                TextButton(
-                  onPressed: (){
-                    postComment(widget.threaduuid);
-                  },
-                  child: Icon(Icons.send_rounded,color: Color(0xff323465),size: 30,),
-                ),
+                    TextButton(
+                    onPressed: isPosting
+                      ? null
+                          : () => postComment(widget.threaduuid),
+                      child: Icon(
+                      Icons.send_rounded,
+                      color: isPosting ? Colors.grey : Color(0xff323465),
+                      size: 30,
+                      ),
+                    )
               ],
             ),
           ),

@@ -90,43 +90,6 @@ class _ForumscreenState extends State<Forumscreen> {
     }
   }
 
-  // Future<void> postComment(String threadId) async {
-  //   final token = context.read<studentTokenProvider>().token;
-  //   final url = Config.getThreadComment();
-  //   final commentText = commentController.text.trim();
-  //
-  //   if (commentText.isNotEmpty) {
-  //     try {
-  //       final response = await http.post(
-  //         Uri.parse(url),
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': 'Bearer $token',
-  //         },
-  //         body: jsonEncode({
-  //           'thread': threadId,
-  //           'comment': commentText,
-  //         }),
-  //       );
-  //
-  //       if (response.statusCode == 201) {
-  //         setState(() {
-  //           commentController.clear();
-  //         });
-  //         fetchThreads();
-  //       } else {
-  //         ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text('Failed to post comment: ${response.statusCode}')),
-  //         );
-  //       }
-  //     } catch (e) {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Error posting comment: $e')),
-  //       );
-  //     }
-  //   }
-  // }
-
 
   Future<void> postLike(String threadId) async {
     final token = context.read<studentTokenProvider>().token;
@@ -428,7 +391,11 @@ class _ForumscreenState extends State<Forumscreen> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => ThreadCommentView(threaduuid: threaduuid,)),
-                                          );
+                                          ).then((shouldRefresh) {
+                                            if (shouldRefresh == true) {
+                                              fetchThreads();
+                                            }
+                                          });
                                         },
                                         style: TextButton.styleFrom(
                                           padding: EdgeInsets.zero,
@@ -474,10 +441,17 @@ class _ForumscreenState extends State<Forumscreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) => PostThread())
-          );
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PostThread()),
+          ).then((shouldRefresh) {
+            if (shouldRefresh == true) {
+              fetchThreads();
+            }
+          });
         },
+
         backgroundColor: Color(0xff323465),
         child:  Icon(Icons.add,size: 40,color: Colors.white,),
       ),

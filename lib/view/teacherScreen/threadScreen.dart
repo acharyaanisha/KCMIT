@@ -345,7 +345,11 @@ print("UUID:${widget.uuid}");
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(builder: (context) => FacultyThreadCommentView(threaduuid: threaduuid,)),
-                                          );
+                                          ).then((shouldRefresh) {
+                                            if (shouldRefresh == true) {
+                                              viewThread();
+                                            }
+                                          });
                                         },
                                         style: TextButton.styleFrom(
                                           padding: EdgeInsets.zero,
@@ -391,9 +395,15 @@ print("UUID:${widget.uuid}");
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          Navigator.push(context, MaterialPageRoute(builder: (_) => PostThreadFaculty(uuid: '${widget.uuid}',))
-          );
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PostThreadFaculty(uuid: '${widget.uuid}',)),
+          ).then((shouldRefresh) {
+            if (shouldRefresh == true) {
+              viewThread();
+            }
+          });
         },
         backgroundColor: Color(0xff323465),
         child:  Icon(Icons.add,size: 40,color: Colors.white,),

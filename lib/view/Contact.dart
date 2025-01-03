@@ -25,10 +25,15 @@ class _ContactState extends State<Contact> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Text("Contact"),
+            Container(
+                height: MediaQuery.of(context).size.height*0.8,
+                width: MediaQuery.of(context).size.width,
+                child: Image.asset('assets/no_data.png')
+            ),
           ],
         ),
       ),
     );
   }
 }
+

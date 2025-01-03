@@ -155,11 +155,12 @@ class _PostThreadState extends State<PostThread> {
                   width: MediaQuery.of(context).size.width * 0.3,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pop(context);
                       postThread(
                         titleController.text.trim(),
                         contentController.text.trim(),
-                      );
+                      ).then((_) {
+                        Navigator.pop(context, true);
+                      });
                     },
                     child: Text(
                       'Post Thread',
@@ -175,7 +176,6 @@ class _PostThreadState extends State<PostThread> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),

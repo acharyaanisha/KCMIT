@@ -25,6 +25,7 @@ class _ThreadCommentViewState extends State<ThreadCommentView> {
   String? errorMessage;
   String? successMessage;
   bool isLoading = true;
+  bool isPosting = false;
 
   @override
   void initState() {
@@ -43,6 +44,9 @@ class _ThreadCommentViewState extends State<ThreadCommentView> {
   }
 
   Future<void> postComment(String threadId) async {
+    setState(() {
+      isPosting = true;
+    });
     final token = context.read<studentTokenProvider>().token;
     final url = Config.getThreadComment();
     final commentText = commentController.text.trim();
@@ -77,6 +81,11 @@ class _ThreadCommentViewState extends State<ThreadCommentView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error posting comment: $e')),
         );
+      }
+      finally {
+        setState(() {
+          isPosting = false;
+        });
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -550,11 +559,15 @@ class _ThreadCommentViewState extends State<ThreadCommentView> {
                 ),
                 // SizedBox(width: 8),
                 TextButton(
-                    onPressed: (){
-                        postComment(widget.threaduuid);
-                      },
-                    child: Icon(Icons.send_rounded,color: Color(0xff323465),size: 30,),
-                ),
+                  onPressed: isPosting
+                      ? null
+                      : () => postComment(widget.threaduuid),
+                  child: Icon(
+                    Icons.send_rounded,
+                    color: isPosting ? Colors.grey : Color(0xff323465),
+                    size: 30,
+                  ),
+                )
               ],
             ),
           ),

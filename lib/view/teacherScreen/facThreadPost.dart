@@ -179,11 +179,15 @@ class _PostThreadFacultyState extends State<PostThreadFaculty> {
                       await postThread(
                         titleController.text.trim(),
                         contentController.text.trim(),
-                      );
+                      ).then((_) {
+                      Navigator.pop(context, true);
+                      Navigator.pop(context,true);
+                      });
+                      },
 
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                    },
+                      // Navigator.pop(context);
+                      // Navigator.pop(context);
+                    // },
                     child: const Text(
                       'Post Thread',
                       style: TextStyle(color: Colors.white, fontSize: 16),

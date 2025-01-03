@@ -40,6 +40,17 @@ class studentTokenProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<bool> isTokenExpired(String token) async {
+    try {
+      if (JwtDecoder.isExpired(token)) {
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return true; // If there's any issue with decoding, consider it expired
+    }
+  }
+
   Future<void> clearTokenAndLogout(BuildContext context) async {
     await _logout();
     Navigator.pushAndRemoveUntil(

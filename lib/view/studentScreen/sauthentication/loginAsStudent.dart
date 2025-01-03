@@ -13,7 +13,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginAsStudent extends StatefulWidget {
-  const LoginAsStudent({super.key});
+  final bool isLoggedOut;
+  const LoginAsStudent({super.key, this.isLoggedOut= false});
 
   @override
   State<LoginAsStudent> createState() => _LoginAsStudentState();
@@ -28,7 +29,16 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
   String? errorMessage;
   String? successMessage;
   bool isLoading = false;
+  bool keepLoggedIn = false;
 
+
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.isLoggedOut) {
+      _loadLoginPreferences();
+    }
+  }
 
   Future<void> subscribeToRoleBasedTopics(String token) async {
     try {
@@ -43,6 +53,17 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
     }
   }
 
+
+  Future<void> _loadLoginPreferences() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      keepLoggedIn = prefs.getBool('keepLoggedIn') ?? false;
+      if (keepLoggedIn) {
+        usernameController.text = prefs.getString('username') ?? '';
+        passwordController.text = prefs.getString('password') ?? '';
+      }
+    });
+  }
 
   Future<void> authenticateStudent(String username, String password) async {
     if (username.isEmpty || password.isEmpty) {
@@ -76,7 +97,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
 
       if (response.statusCode == 200) {
         final responseBody = jsonDecode(response.body);
-        // print("response: $responseBody");
+
 
         final String token = responseBody['token'];
         context.read<studentTokenProvider>().setToken(token);
@@ -86,6 +107,15 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('token', token);
+
+        if (keepLoggedIn) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('username', username);
+          await prefs.setString('password', password);
+          await prefs.setBool('keepLoggedIn', true);
+          await prefs.setString('token', token);
+        }
+
 
         // print("Token: $token");
 
@@ -304,20 +334,33 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
 
   Widget _buildLoginOptions() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ForgetPassword()),
-            );
-          },
-          child: const Text(
-            'Reset password?',
-            style: TextStyle(color: Color(0xff323465)),
-          ),
+        Row(
+          children: [
+            Checkbox(
+              value: keepLoggedIn,
+              onChanged: (bool? value) {
+                setState(() {
+                  keepLoggedIn = value ?? false;
+                });
+              },
+            ),
+            const Text('Keep Login'),
+          ],
         ),
+        // TextButton(
+        //   onPressed: () {
+        //     Navigator.push(
+        //       context,
+        //       MaterialPageRoute(builder: (context) => ForgetPassword()),
+        //     );
+        //   },
+        //   child: const Text(
+        //     'Reset password?',
+        //     style: TextStyle(color: Color(0xff323465)),
+        //   ),
+        // ),
       ],
     );
   }
