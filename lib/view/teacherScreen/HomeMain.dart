@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:kcmit/view/teacherScreen/ThomeScreen.dart';
 import 'package:kcmit/view/teacherScreen/factRoutine.dart';
 import 'package:kcmit/view/teacherScreen/facultySetting.dart';
+import 'package:flutter/material.dart';
 
 
 class FactHomeMain extends StatefulWidget {
-
-  const FactHomeMain({Key? key,}) : super(key: key);
+  const FactHomeMain({Key? key}) : super(key: key);
 
   @override
   State<FactHomeMain> createState() => _FactHomeMainState();
@@ -15,38 +14,38 @@ class FactHomeMain extends StatefulWidget {
 class _FactHomeMainState extends State<FactHomeMain> {
   int _selectedIndex = 0;
 
+
+  final List<Widget> _pages = [
+    TeachHomeScreen(),
+    FacultyRoutineScreen(),
+    FacultySetting(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Future<bool> _onWillPop() async {
+    if (_selectedIndex != 0) {
+      setState(() {
+        _selectedIndex = 0;
+      });
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final List<Widget> _pages = [
-      TeachHomeScreen(),
-      FacultyRoutineScreen(),
-      FacultySetting(),
-      // StudentMenu(),
-    ];
-
-    void _onItemTapped(int index) {
-      setState(() {
-        _selectedIndex = index;
-      });
-    }
-
-    Future<bool> _onWillPop() async {
-      if (_selectedIndex != 0) {
-        setState(() {
-          _selectedIndex = 0;
-        });
-        return false;
-      }
-      return true;
-    }
-
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
+        // extendBody: true,
         body: _pages[_selectedIndex],
         bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(40),
-          // padding: const EdgeInsets.only(bottom: 50,left: 10,right: 10),
+          padding: const EdgeInsets.only(bottom: 30,left: 40,right: 40),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -67,14 +66,15 @@ class _FactHomeMainState extends State<FactHomeMain> {
               backgroundColor: Colors.transparent,
               elevation: 0,
               selectedItemColor: Color(0xff323465),
-              unselectedItemColor: Colors.black,
+              // selectedItemColor: Colors.blue,
+              unselectedItemColor:  Color(0xff323465),
               selectedIconTheme: IconThemeData(
-                // color: Color(0xff323465),
                 color: Color(0xff323465),
+                // color: Colors.blue,
                 size: 30,
               ),
               unselectedIconTheme: IconThemeData(
-                color: Colors.black,
+                color:  Color(0xff323465),
                 size: 25,
               ),
               items: const [
@@ -85,7 +85,8 @@ class _FactHomeMainState extends State<FactHomeMain> {
                 BottomNavigationBarItem(
                   icon: Icon(Icons.timer_outlined,),
                   label: 'Routine',
-                ),BottomNavigationBarItem(
+                ),
+                BottomNavigationBarItem(
                   icon: Icon(Icons.settings_outlined,),
                   label: 'Setting',
                 ),
@@ -97,3 +98,5 @@ class _FactHomeMainState extends State<FactHomeMain> {
     );
   }
 }
+
+

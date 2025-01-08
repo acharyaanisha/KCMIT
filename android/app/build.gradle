@@ -49,25 +49,51 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+//            applicationVariants.all { variant ->
+//                variant.outputs.all {
+//                    if (variant.buildType.name == "release") {
+//                        outputFileName = "KCMITians${variant.versionName}.apk"
+//                    }
+//                }
+//            }
+//            signingConfig = signingConfigs.debug
+//        }
+
+            release {
+                // Add this block to rename APK files based on the ABI
+//                applicationVariants.all { variant ->
+//                    variant.outputs.all { output ->
+//                        if (variant.buildType.name == "release") {
+//                            def abi = output.getFilter(com.android.build.OutputFile.ABI)
+//                            // Get ABI filter
+//                            def versionName = variant.versionName
+//                            if (abi != null) { // Only rename split APKs
+//                                outputFileName = "KCMITians_${versionName}.apk"
+//                            } else { // Rename the universal APK
+//                                outputFileName = "KCMITians${versionName}.apk"
+//                            }
+//                        }
+//                    }
+//                }
+                signingConfig = signingConfigs.debug
+            }
         }
     }
-}
 
-flutter {
-    source = "../.."
-}
+    flutter {
+        source = "../.."
+    }
 
-dependencies {
+    dependencies {
 
-    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
-
+        implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
 
 
-}
+    }
 
-android {
-    defaultConfig {
-        minSdkVersion flutter.minSdkVersion
+    android {
+        defaultConfig {
+            minSdkVersion flutter.minSdkVersion
+        }
     }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/Contact.dart';
+import 'package:kcmit/view/rate.dart';
 import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
 import 'package:kcmit/view/teacherScreen/facultyChangePassword.dart';
@@ -64,7 +65,7 @@ class _FacultySettingState extends State<FacultySetting> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Policy()),
+                    MaterialPageRoute(builder: (context) => Rate()),
                   );
                 },
               ),

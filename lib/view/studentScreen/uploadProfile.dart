@@ -8,6 +8,7 @@ import 'package:kcmit/view/studentScreen/stProfile.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:provider/provider.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:path/path.dart' as path;
 
 class EditProfile extends StatefulWidget {
   const EditProfile({super.key});
@@ -23,12 +24,25 @@ class _EditProfileState extends State<EditProfile> {
   String errorMessage = '';
   String successMessage = '';
 
+
+  final List<String> allowedExtensions = ['png', 'jpg', 'jpeg'];
+
   Future<void> pickImage() async {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
+
+        final fileExtension = path.extension(pickedFile.path).toLowerCase();
+        if (!allowedExtensions.contains(fileExtension.replaceAll('.', ''))) {
+          setState(() {
+            errorMessage = 'Only PNG, JPG, and JPEG formats are supported.';
+          });
+          return;
+        }
+
         setState(() {
           _image = File(pickedFile.path);
+          errorMessage = '';
         });
       } else {
         setState(() {
@@ -41,6 +55,7 @@ class _EditProfileState extends State<EditProfile> {
       });
     }
   }
+
 
   Future<void> updateProfile() async {
     if (_image == null) {
@@ -60,30 +75,34 @@ class _EditProfileState extends State<EditProfile> {
     });
 
     try {
+
       final request = http.MultipartRequest('POST', Uri.parse(url));
       request.headers['Authorization'] = 'Bearer $token';
+
       request.files.add(await http.MultipartFile.fromPath(
-        'image',
+        'profile-picture',
         _image!.path,
-        contentType: MediaType('image', 'jpeg'),
+        contentType: _getContentType(_image!.path),
       ));
 
+      // Send the request
       final response = await request.send();
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         final responseBody = await response.stream.bytesToString();
         final jsonResponse = jsonDecode(responseBody);
 
-        if (jsonResponse['code'] == '0') {
+        if (jsonResponse['success'] == true) {
           setState(() {
-            successMessage = 'Profile updated successfully!';
+            successMessage = jsonResponse['message'] ?? 'Profile updated successfully!';
           });
 
-          // Navigate to profile screen after success
+          // Navigate to the profile screen after success
           Future.delayed(const Duration(seconds: 1), () {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => StProfile()),
+                  // (Route<dynamic> route) => false,
             );
           });
         } else {
@@ -104,6 +123,19 @@ class _EditProfileState extends State<EditProfile> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  MediaType _getContentType(String filePath) {
+    final fileExtension = path.extension(filePath).toLowerCase();
+    switch (fileExtension) {
+      case '.png':
+        return MediaType('image', 'png');
+      case '.jpg':
+      case '.jpeg':
+        return MediaType('image', 'jpeg');
+      default:
+        return MediaType('application', 'octet-stream');
     }
   }
 
@@ -156,7 +188,7 @@ class _EditProfileState extends State<EditProfile> {
 
               const SizedBox(height: 20),
 
-              // Success or Error messages
+
               if (successMessage.isNotEmpty)
                 Text(
                   successMessage,

@@ -83,12 +83,14 @@ class _StProfileState extends State<StProfile> {
             elevation: 0,
 
             actions: [
-              IconButton(onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => EditProfile()),
-                );
-              }, icon: Icon(Icons.edit)),
+              IconButton(
+                  onPressed: (){
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => EditProfile()),
+                    ).then((_) {
+                    });
+                  }, icon: Icon(Icons.edit)),
             ],
 
           ),
@@ -130,7 +132,7 @@ class _StProfileState extends State<StProfile> {
                       child: Image.network(
                         studentProfile!.profilePicture!.startsWith('http')
                             ? studentProfile!.profilePicture!
-                            : "http://192.168.1.64:5000/${studentProfile!.profilePicture!}",
+                            : "http://kcmit-api.kcmit.edu.np:5000/${studentProfile!.profilePicture!}",
                         width: 150,
                         height: 150,
                         fit: BoxFit.cover,

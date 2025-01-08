@@ -94,7 +94,8 @@ flutter:
     - assets/faculties.png
     - assets/sports.png
     - assets/students.png
-#    - assets/imp.png
+    - assets/graduation.png
+    - assets/member.png
     - assets/no_data.png
     - assets/server_error.png
     - assets/no_internet.png

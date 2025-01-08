@@ -22,6 +22,9 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
   StudentProfile? studentProfile;
   TabController? _tabController;
 
+  // Reorder days of the week for correct sequence
+  List<String> orderedDays = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+
   @override
   void initState() {
     super.initState();
@@ -62,10 +65,13 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
           routineData = jsonResponse['data'];
           errorMessage = 'assets/no_data.png';
           isLoading = false;
+
+          List<String> availableDays = orderedDays.where((day) => routineData.containsKey(day)).toList();
+
           _tabController = TabController(
-            length: routineData.keys.length,
+            length: availableDays.length,
             vsync: this,
-            initialIndex: currentDay > 6 ? 0 : currentDay - 1,
+            initialIndex: currentDay > 6 ? 0 : currentDay,
           );
         });
       } else {
@@ -131,7 +137,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 13.0,),
+        padding: const EdgeInsets.only(top: 13.0),
         child: Column(
           children: [
             if (_tabController != null)
@@ -140,19 +146,9 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
                 labelColor: Color(0xff323465),
                 indicatorColor: Color(0xff323465),
                 unselectedLabelColor: Colors.black,
-                // indicator: BoxDecoration(
-                //   color: Color(0xff323465),
-                //   shape: BoxShape.rectangle,
-                //   border: Border.all(
-                //     color: Colors.white,
-                //     width: 2.0,
-                //   ),
-                //   borderRadius: BorderRadius.circular(5)
-                // ),
-                tabs: routineData.keys.map((day) {
+                tabs: orderedDays.where((day) => routineData.containsKey(day)).map((day) {
                   String firstThreeChars = day.length >= 3 ? day.substring(0, 3) : day;
-                  return Container(
-                      child: Tab(text: firstThreeChars,));
+                  return Tab(text: firstThreeChars);
                 }).toList(),
               ),
 
@@ -164,7 +160,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
                 child: _tabController != null
                     ? TabBarView(
                   controller: _tabController,
-                  children: routineData.keys.map((day) {
+                  children: orderedDays.where((day) => routineData.containsKey(day)).map((day) {
                     return routineData[day] != null
                         ? ListView.builder(
                       itemCount: routineData[day]!.length,
@@ -174,10 +170,16 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
                           margin: const EdgeInsets.all(8.0),
                           color: Colors.grey.shade50,
                           child: ListTile(
-                            leading: const Icon(Icons.timer_outlined, size: 50, color: Color(0xff323465)),
+                            leading: const Icon(
+                              Icons.timer_outlined,
+                              size: 50,
+                              color: Color(0xff323465),
+                            ),
                             title: Text(
                               '${routine['startTime']} - ${routine['endTime']}',
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 17),
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,7 +192,7 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
                         );
                       },
                     )
-                        : Image.asset(errorMessage);
+                        : Center(child: Image.asset(errorMessage));
                   }).toList(),
                 )
                     : Center(child: CircularProgressIndicator()),

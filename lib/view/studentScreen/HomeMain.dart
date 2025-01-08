@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kcmit/view/Calendar.dart';
 import 'package:kcmit/view/studentScreen/StHomeScreen.dart';
 import 'package:kcmit/view/studentScreen/stMenuItem/stMenu.dart';
+import 'package:kcmit/view/studentScreen/studentCalender.dart';
 
 class StHomeMain extends StatefulWidget {
   const StHomeMain({Key? key}) : super(key: key);
@@ -16,7 +17,7 @@ class _StHomeMainState extends State<StHomeMain> {
   // List of Pages
   final List<Widget> _pages = [
     StHomeScreen(),
-    CalendarScreen(),
+    StudentCalendarScreen(),
     StudentMenu(),
   ];
 

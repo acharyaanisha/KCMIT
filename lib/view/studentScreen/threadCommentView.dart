@@ -403,7 +403,6 @@ class _ThreadCommentViewState extends State<ThreadCommentView> {
                                             ),
                                           ),
                                         ),
-
                                         SizedBox(width: 10,),
                                         Container(
                                           width: MediaQuery.of(context).size.width * 0.15,

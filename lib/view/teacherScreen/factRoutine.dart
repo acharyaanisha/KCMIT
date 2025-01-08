@@ -14,8 +14,7 @@ class FacultyRoutineScreen extends StatefulWidget {
   State<FacultyRoutineScreen> createState() => _FacultyRoutineScreenState();
 }
 
-class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with SingleTickerProviderStateMixin{
-
+class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with SingleTickerProviderStateMixin {
   String? selectedItem;
   String errorMessage = '';
   bool isLoading = true;
@@ -25,27 +24,27 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
   StudentProfile? studentProfile;
   TabController? _tabController;
 
+  List<String> orderedDays = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY'];
+
   @override
   void initState() {
     super.initState();
     fetchRoutineData();
-    // fetchUserData();
     setState(() {
       selectedItem = getDayFromIndex(currentDay);
     });
   }
 
-  // Map weekday index to day name (Monday, Tuesday, etc.)
   String getDayFromIndex(int dayIndex) {
     switch (dayIndex) {
-      case 1: return 'MONDAY';
-      case 2: return 'TUESDAY';
-      case 3: return 'WEDNESDAY';
-      case 4: return 'THURSDAY';
-      case 5: return 'FRIDAY';
-      case 6: return 'SATURDAY';
-      case 7: return 'SUNDAY';
-      default: return 'MONDAY'; // Default fallback if the index is invalid
+      case 1: return 'SUNDAY';
+      case 2: return 'MONDAY';
+      case 3: return 'TUESDAY';
+      case 4: return 'WEDNESDAY';
+      case 5: return 'THURSDAY';
+      case 6: return 'FRIDAY';
+      case 7: return 'SATURDAY';
+      default: return 'SUNDAY';
     }
   }
 
@@ -67,16 +66,18 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
         setState(() {
           routineData = jsonResponse['data'];
+
+          List<String> availableDays = orderedDays.where((day) => routineData.containsKey(day)).toList();
           _tabController = TabController(
-            length: routineData.keys.length,
+            length: availableDays.length,
             vsync: this,
-            initialIndex: currentDay > 6 ? 0 : currentDay - 1,
+            initialIndex: currentDay > 6 ? 0 : currentDay,
           );
           errorMessage = '';
           isLoading = false;
         });
 
-        // Ensure selectedItem matches a key in routineData
+
         if (!routineData.containsKey(selectedItem)) {
           setState(() {
             selectedItem = routineData.keys.isNotEmpty ? routineData.keys.first : null;
@@ -96,39 +97,6 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
     }
   }
 
-  // Future<void> fetchUserData() async {
-  //   final token = context.read<studentTokenProvider>().token;
-  //   final url = Config.getStudentProfile();
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': 'Bearer $token',
-  //       },
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-  //       setState(() {
-  //         studentProfile = StudentProfile.fromJson(jsonResponse['data']);
-  //         errorMessage = '';
-  //         isLoading = false;
-  //       });
-  //     } else {
-  //       setState(() {
-  //         errorMessage = 'Failed to load user data.';
-  //         isLoading = false;
-  //       });
-  //     }
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = 'Failed to load data.';
-  //       isLoading = false;
-  //     });
-  //   }
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -144,7 +112,7 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 13.0, ),
+        padding: const EdgeInsets.only(top: 13.0),
         child: Column(
           children: [
             if (_tabController != null)
@@ -153,19 +121,11 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
                 labelColor: Color(0xff323465),
                 indicatorColor: Color(0xff323465),
                 unselectedLabelColor: Colors.black,
-                // indicator: BoxDecoration(
-                //   color: Color(0xff323465),
-                //   shape: BoxShape.rectangle,
-                //   border: Border.all(
-                //     color: Colors.white,
-                //     width: 2.0,
-                //   ),
-                //   borderRadius: BorderRadius.circular(5)
-                // ),
-                tabs: routineData.keys.map((day) {
+                tabs: orderedDays.where((day) => routineData.containsKey(day)).map((day) {
                   String firstThreeChars = day.length >= 3 ? day.substring(0, 3) : day;
                   return Container(
-                      child: Tab(text: firstThreeChars,));
+                    child: Tab(text: firstThreeChars),
+                  );
                 }).toList(),
               ),
 
@@ -173,11 +133,11 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0,top: 10),
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10),
                 child: _tabController != null
                     ? TabBarView(
                   controller: _tabController,
-                  children: routineData.keys.map((day) {
+                  children: orderedDays.where((day) => routineData.containsKey(day)).map((day) {
                     return routineData[day] != null
                         ? ListView.builder(
                       itemCount: routineData[day]!.length,
@@ -196,7 +156,7 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("${routine['subject']} (Room ${routine['room']})"),
-                                Text('Semester:${routine['semester']}',style: TextStyle(fontSize: 15),),
+                                Text('Semester:${routine['semester']}', style: TextStyle(fontSize: 15)),
                               ],
                             ),
                           ),

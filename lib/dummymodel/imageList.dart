@@ -9,8 +9,9 @@ List<String> imageList = [
   'assets/College_premises.png',
   'assets/principal.png',
   'assets/freshers.png',
+  'assets/member.png',
   'assets/teachers_day.png',
-  'assets/faculties.png',
+  'assets/graduation.png',
   'assets/sports.png',
   'assets/students.png',
 ];

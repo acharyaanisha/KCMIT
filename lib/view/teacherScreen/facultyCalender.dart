@@ -1,10 +1,11 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:kcmit/view/teacherScreen/facultyToken.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class FacultyCalendarScreen extends StatefulWidget {
   const FacultyCalendarScreen({super.key});
@@ -14,8 +15,11 @@ class FacultyCalendarScreen extends StatefulWidget {
 }
 
 class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
+
+  DateTime focusedDay = DateTime.now();
   DateTime? selectedDate;
   List<dynamic> _events = [];
+  List<dynamic> filteredEvents = [];
   String errorMessage = '';
   bool isLoading = true;
 
@@ -24,8 +28,8 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
     super.initState();
     fetchEventData();
     selectedDate = DateTime.now();
+    filterEvents();
   }
-
 
   Future<void> fetchEventData() async {
     final token = context.read<facultyTokenProvider>().token;
@@ -43,10 +47,9 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
       print("Events: ${response.body}");
       if (response.statusCode == 200) {
         final jsonResponse = jsonDecode(utf8.decode(response.bodyBytes));
-        print("Events: $jsonResponse");
         setState(() {
           _events = jsonResponse['data'];
-          errorMessage = 'assets/no_data.png';
+          filterEvents();
           isLoading = false;
         });
       } else {
@@ -60,28 +63,33 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
     }
   }
 
-
-  List<dynamic> getFilteredEvents() {
-    if (selectedDate == null) return [];
+  void filterEvents() {
+    if (selectedDate == null) {
+      setState(() {
+        filteredEvents = [];
+      });
+      return;
+    }
 
     int selectedMonth = selectedDate!.month;
     int selectedYear = selectedDate!.year;
 
-    return _events.where((event) {
-      DateTime eventDate = DateTime.parse(event['eventDate']);
-      return eventDate.month == selectedMonth && eventDate.year == selectedYear;
-    }).toList();
+    setState(() {
+      filteredEvents = _events.where((event) {
+        DateTime eventDate = DateTime.parse(event['eventDate']);
+        return eventDate.month == selectedMonth && eventDate.year == selectedYear;
+      }).toList();
+    });
   }
-
 
   void onDateChanged(DateTime date) {
     setState(() {
       selectedDate = date;
+      filterEvents();
     });
   }
 
-
-  void _showDialog(String? eventPoster, String name, String description, String location, String eventTime, String eventDate) {
+  void _showDialog(String? eventPoster, String name, String description, String? location, String? eventTime, String eventDate) {
     print("Image URL: $eventPoster");
     showDialog(
       context: context,
@@ -100,7 +108,7 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
                   Image.network(
                     eventPoster.startsWith('http')
                         ? eventPoster
-                        : "http://kcmit-api.kcmit.edu.np/$eventPoster",
+                        : "http://kcmit-api.kcmit.edu.np:5000/$eventPoster",
                     fit: BoxFit.contain,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) return child;
@@ -118,7 +126,7 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
                 const SizedBox(height: 10),
                 Text(description, style: const TextStyle(fontSize: 16)),
                 const SizedBox(height: 10),
-                if (location.isNotEmpty)
+                if (location != null && location.isNotEmpty)
                   Row(
                     children: [
                       const Icon(Icons.location_on, size: 20, color: Colors.grey),
@@ -135,13 +143,14 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                Row(
-                  children: [
-                    const Icon(Icons.access_time, size: 20, color: Colors.grey),
-                    const SizedBox(width: 8),
-                    Text(eventTime, style: const TextStyle(fontSize: 16)),
-                  ],
-                ),
+                if (eventTime != null && eventTime.isNotEmpty)
+                  Row(
+                    children: [
+                      const Icon(Icons.access_time, size: 20, color: Colors.grey),
+                      const SizedBox(width: 8),
+                      Text(eventTime, style: const TextStyle(fontSize: 16)),
+                    ],
+                  ),
                 const SizedBox(height: 20),
                 Align(
                   alignment: Alignment.centerRight,
@@ -176,29 +185,163 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              height: 300,
-              child: CalendarDatePicker(
-                initialDate: DateTime.now(),
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                onDateChanged: onDateChanged,
+                height: MediaQuery.of(context).size.height * 0.5,
+                child: TableCalendar(
+                  firstDay: DateTime(2000),
+                  lastDay: DateTime(2100),
+                  focusedDay: focusedDay,
+                  selectedDayPredicate: (day) => isSameDay(selectedDate, day),
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      this.selectedDate = selectedDay;
+                      this.focusedDay = focusedDay;
+                    });
+
+                    final eventsForDay = filteredEvents.where((event) {
+                      DateTime eventStartDate = DateTime.parse(event['eventDate']);
+                      DateTime? eventEndDate = event['eventEndDate'] != null
+                          ? DateTime.parse(event['eventEndDate'])
+                          : eventStartDate;
+
+                      return selectedDay.isAfter(eventStartDate) &&
+                          selectedDay.isBefore(eventEndDate.add(const Duration(days: 1)));
+                    }).toList();
+
+                    if (eventsForDay.isNotEmpty) {
+                      final firstEvent = eventsForDay.first;
+                      _showDialog(
+                        firstEvent['eventPoster'],
+                        firstEvent['name'],
+                        firstEvent['description'],
+                        firstEvent['location'],
+                        firstEvent['eventTime'],
+                        firstEvent['eventDate'],
+                      );
+                    }
+                    filterEvents();
+
+                  },
+                  onPageChanged: (focusedDay) {
+                    setState(() {
+                      this.focusedDay = focusedDay;
+                      this.selectedDate = focusedDay;
+                    });
+                    filterEvents();
+                  },
+                  eventLoader: (day) {
+                    return filteredEvents.where((event) {
+                      DateTime eventDate = DateTime.parse(event['eventDate']);
+                      return isSameDay(day, eventDate);
+                    }).toList();
+                  },
+                  calendarStyle: CalendarStyle(
+                    todayDecoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.5),
+                      shape: BoxShape.rectangle,
+                    ),
+                    selectedDecoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        border: Border.all(color: Color(0xff323465))
+                    ),
+                    defaultTextStyle: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    todayTextStyle: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    selectedTextStyle: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    weekendTextStyle: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  calendarBuilders: CalendarBuilders(
+                    markerBuilder: (context, date, events) {
+                      for (var event in filteredEvents) {
+                        DateTime eventStartDate = DateTime.parse(event['eventDate']);
+                        DateTime? eventEndDate = event['eventEndDate'] != null
+                            ? DateTime.parse(event['eventEndDate'])
+                            : eventStartDate;
+
+                        if (date.isAfter(eventStartDate) &&
+                            date.isBefore(eventEndDate.add(const Duration(days: 1)))) {
+                          String eventCategory = event['eventCategory']['name'];
+                          Color markerColor;
+
+
+                          switch (eventCategory) {
+                            case 'Holiday':
+                              markerColor = Colors.red;
+                              break;
+                            case 'Examination':
+                              markerColor = Colors.green;
+                              break;
+                            case 'Sports':
+                              markerColor = Colors.blue;
+                              break;
+                            case 'Academic & Professional Development':
+                              markerColor = Colors.orange;
+                              break;
+                            default:
+                              markerColor = Colors.cyan;
+                          }
+
+                          return Container(
+                            margin: const EdgeInsets.all(5.0),
+                            decoration: BoxDecoration(
+                              color: markerColor,
+                              shape: BoxShape.rectangle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${date.day}',
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                  headerStyle: HeaderStyle(
+                    formatButtonVisible: false,
+                    titleCentered: true,
+                  ),
+                )
+
+            ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height*0.001,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0),
+              child: Text("Events",style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15
+              ),
+                textAlign: TextAlign.start,
               ),
             ),
-            SizedBox(height: 5,),
             Container(
               child: isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : _events.isEmpty
+                  : filteredEvents.isEmpty
                   ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Image.asset(errorMessage, height: 150),
-                    const Text(
-                      'No Events Found',
-                      style: TextStyle(fontSize: 18),
+                  children: const [
+                    Text(
+                      'No events found.',
+                      style: TextStyle(fontSize: 12),
                     ),
                   ],
                 ),
@@ -206,37 +349,82 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
                   : SingleChildScrollView(
                 child: Column(
                   children: [
-                    // List of filtered events
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: getFilteredEvents().length,
+                      itemCount: filteredEvents.length,
                       itemBuilder: (context, index) {
-                        final event = getFilteredEvents()[index];
+                        final event = filteredEvents[index];
                         return GestureDetector(
-                          onTap: () {
-                            _showDialog(
-                              event['eventPoster'],
-                              event['name'],
-                              event['description'],
-                              event['location'],
-                              event['eventTime'],
-                              event['eventDate'],
-                            );
-                          },
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.grey.shade50,
-                            margin: const EdgeInsets.all(8.0),
-                            child: ListTile(
-                              title: Text(event['name']),
-                              subtitle: Text(
-                                "Date: ${event['eventDate']}\n"
-                                    "Time: ${event['eventTime']}\n"
-                                    "Location: ${event['location']}",
+                            onTap: () {
+                              _showDialog(
+                                event['eventPoster'],
+                                event['name'],
+                                event['description'],
+                                event['location'],
+                                event['eventTime'],
+                                event['eventDate'],
+                              );
+                            },
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.grey.shade50,
+                              margin: const EdgeInsets.all(8.0),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    // Event name
+                                    Text(
+                                      event['name'],
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.01,
+                                    ),
+
+                                    // Event date
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_month_outlined, size: 20),
+                                        SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                        Text("${event['eventDate']}"),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.01,
+                                    ),
+
+                                    if (event['eventTime'] != null && event['eventTime']!.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          Icon(Icons.timer_outlined, size: 20),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                          Text(" ${event['eventTime']}"),
+                                        ],
+                                      ),
+                                    SizedBox(
+                                      height: MediaQuery.of(context).size.height * 0.01,
+                                    ),
+
+                                    if (event['location'] != null && event['location']!.isNotEmpty)
+                                      Row(
+                                        children: [
+                                          Icon(Icons.location_on_outlined, size: 20),
+                                          SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                          Text("${event['location']}"),
+                                        ],
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ),
+                            )
+
+
                         );
                       },
                     ),
@@ -250,4 +438,3 @@ class _FacultyCalendarScreenState extends State<FacultyCalendarScreen> {
     );
   }
 }
-

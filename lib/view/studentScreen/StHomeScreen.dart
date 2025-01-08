@@ -39,8 +39,9 @@ class _StHomeScreenState extends State<StHomeScreen> {
     "College Premises",
     "Principal",
     "Freshers",
+    'Faculty Members',
     "Teachers Day Celebration",
-    "Faculty Member",
+    'Graduation',
     "Sports",
     "Students",
   ];
@@ -299,36 +300,6 @@ class _StHomeScreenState extends State<StHomeScreen> {
                 Section(
                   title: "Quick Navigation",
                   iconsAndTexts: [
-                    // IconAndText(
-                    //     Icons.timer_outlined, "Routine", StRoutineScreen(),
-                    //     Colors.blue.shade300),
-                    // IconAndText(
-                    //     Icons.circle_notifications_outlined,
-                    //     "Notices",
-                    //     StudentNotices(),
-                    //     Colors.orange.shade300),
-                    // IconAndText(
-                    //     Icons.download_for_offline_outlined,
-                    //     "Resources",
-                    //     Resource(),
-                    //     Colors.purple.shade300),
-                    // IconAndText(
-                    //     Icons.calendar_month_outlined,
-                    //     "Calendar",
-                    //     CalendarScreen(),
-                    //     Colors.deepPurple.shade300),
-                    // IconAndText(
-                    //     Icons.person,
-                    //     "Faculty",
-                    //     FacultyMemberList(),
-                    //     Color(0xff8EB486)
-                    // ),
-                    // IconAndText(
-                    //     Icons.check_circle_outline,
-                    //     "Attendance",
-                    //     StudentAttendance(),
-                    //     Colors.amber.shade300
-                    // ),
                     IconAndText(
                         Icons.menu_book,
                         "My Course",
@@ -458,6 +429,7 @@ class _StHomeScreenState extends State<StHomeScreen> {
                                     style: TextStyle(
                                       color: Colors.black,
                                     ),
+                                    textAlign: TextAlign.justify,
                                   ),
                                   SizedBox(height: 5),
                                   if (_isExpandedList[index])

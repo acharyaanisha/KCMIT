@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:kcmit/view/authentication/loginPage.dart';
 import 'package:kcmit/view/Contact.dart';
+import 'package:kcmit/view/rate.dart';
 import 'package:kcmit/view/studentScreen/stSetting/stChangePassword.dart';
 import 'package:kcmit/view/PrivacyPolicy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -62,7 +63,7 @@ class _StudentSettingState extends State<StudentSetting> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => StudentChangePassword()),
+                    MaterialPageRoute(builder: (context) => Rate()),
                   );
                 },
               ),

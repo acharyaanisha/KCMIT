@@ -1,8 +1,8 @@
 class Config{
 
   // static const String baseUrl = "http://46.250.248.179:5000";
-  static const String baseUrl = "http://192.168.1.78:5000";
-  // static const String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
+  // static const String baseUrl = "http://192.168.1.78:5000";
+  static const String baseUrl = "http://kcmit-api.kcmit.edu.np:5000";
 
   //Authentication
   static const String _studentAuthenticateEndpoint = "api/authenticate/student";
@@ -165,7 +165,7 @@ class Config{
   static String getThreadViewCommentFac() => '$baseUrl/$_viewOneThreadFacEndpoint';
 
   // Exam View Routine
-  static const String _viewexamEndpoint = "api/examsetup/exam/viewRoutine";
+  static const String _viewexamEndpoint = "api/examSetup/viewRoutine";
 
   static String getExam() => '$baseUrl/$_viewexamEndpoint';
 }
