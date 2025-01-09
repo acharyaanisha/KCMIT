@@ -98,11 +98,11 @@ class _FacultySettingState extends State<FacultySetting> {
                 },
                 child: Row(
                   children: [
-                    Icon(Icons.logout,color: Color(0xffEE1B08),),
+                    Icon(Icons.logout,color: Color(0xff323465),),
                     SizedBox(width: 10,),
                     Text("Log Out",
                       style: TextStyle(
-                        color: Color(0xffEE1B08),
+                        color: Color(0xff323465),
                         fontSize: 15,
                       ),
                     ),

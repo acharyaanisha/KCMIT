@@ -92,7 +92,10 @@ class _semesterScreenState extends State<semesterScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.all(10.0),
-              child: GridView.builder(
+              child: isLoading
+                  ? const Center(child: CircularProgressIndicator()):
+                  semesterList.isNotEmpty
+                  ? GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -126,12 +129,13 @@ class _semesterScreenState extends State<semesterScreen> {
                       child: Stack(
                         children: [
                           Center(
-                            child: Text('${semester['course']}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            child: Text(
+                              '${semester['course']}',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           Positioned(
@@ -141,11 +145,10 @@ class _semesterScreenState extends State<semesterScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                               decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.5),
-                                  borderRadius: BorderRadius.circular(12)
+                                color: Colors.black.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              child:
-                              Text(
+                              child: Text(
                                 '${semester['semester']}',
                                 style: const TextStyle(
                                   fontSize: 15.0,
@@ -160,10 +163,13 @@ class _semesterScreenState extends State<semesterScreen> {
                       ),
                     ),
                   );
-
                 },
-              ),
-            )
+              ): Container(
+                      height: MediaQuery.of(context).size.height*0.8,
+                      width: MediaQuery.of(context).size.width,
+                      child: Image.asset('assets/no_data.png')
+                  )
+            ),
           ],
         ),
       ),

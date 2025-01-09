@@ -195,7 +195,11 @@ class _StRoutineScreenState extends State<StRoutineScreen> with SingleTickerProv
                         : Center(child: Image.asset(errorMessage));
                   }).toList(),
                 )
-                    : Center(child: CircularProgressIndicator()),
+                    : Container(
+                    height: MediaQuery.of(context).size.height*0.8,
+                    width: MediaQuery.of(context).size.width,
+                    child: Image.asset('assets/no_data.png')
+                )
               ),
             ),
           ],

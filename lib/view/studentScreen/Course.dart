@@ -86,7 +86,7 @@ class _CourseScreenState extends State<CourseScreen> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: isLoading
-              ? Center(child: CircularProgressIndicator())
+              ? const Center(child: CircularProgressIndicator())
               : errorMessage.isNotEmpty
               ? Center(child: Text(errorMessage))
               : Column(

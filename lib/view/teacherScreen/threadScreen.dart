@@ -151,7 +151,14 @@ print("UUID:${widget.uuid}");
 
             ),
             color: Colors.white
-        ),child: const Center(child: Text('No threads available')))
+        ),
+            child: Container(
+            height: MediaQuery.of(context).size.height*0.9,
+          width: MediaQuery.of(context).size.width,
+          child: Image.asset('assets/no_data.png')
+      )
+        )
+
             : Padding(
           // padding: const EdgeInsets.all(0.0),
           padding: const EdgeInsets.only(left: 0.0,top: 0,bottom: 2),

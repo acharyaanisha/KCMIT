@@ -17,25 +17,16 @@ class Forumscreen extends StatefulWidget {
 }
 
 class _ForumscreenState extends State<Forumscreen> {
+
   List<dynamic> threadList = [];
   String? errorMessage;
   String? successMessage;
-  // String errorMessage = '';
   bool isLoading = true;
 
   final TextEditingController commentController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController contentController = TextEditingController();
   String selectedSemester = '';
-  // Timer? _timer;
-
-
-  // void _startTimer() {
-  //
-  //   _timer = Timer.periodic(const Duration(seconds: 60), (Timer timer) {
-  //     _refreshData();
-  //   });
-  // }
 
   Future<void> _refreshData() async {
 
@@ -111,7 +102,6 @@ class _ForumscreenState extends State<Forumscreen> {
 
       if (response.statusCode == 201) {
         setState(() {
-
           fetchThreads();
         });
       } else {
@@ -126,40 +116,6 @@ class _ForumscreenState extends State<Forumscreen> {
       );
     }
   }
-
-
-  // Future<void> postThread(String title, String content,) async {
-  //   final token = context.read<studentTokenProvider>().token;
-  //   final url = Config.getThreadPost();
-  //
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse(url),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': 'Bearer $token',
-  //       },
-  //       body: jsonEncode({
-  //         'title': title,
-  //         'content': content,
-  //       }),
-  //     );
-  //
-  //     if (response.statusCode == 201) {
-  //       fetchThreads();
-  //       titleController.clear();
-  //       contentController.clear();
-  //     } else {
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //         SnackBar(content: Text('Failed to post thread: ${response.statusCode}')),
-  //       );
-  //     }
-  //   } catch (e) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(content: Text('Error posting thread: $e')),
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +153,11 @@ class _ForumscreenState extends State<Forumscreen> {
 
             ),
             color: Colors.white
-        ),child: const Center(child: Text('No threads available')))
+        ),child: Container(
+            height: MediaQuery.of(context).size.height*0.9,
+            width: MediaQuery.of(context).size.width,
+            child: Image.asset('assets/no_data.png')
+        ))
             : Padding(
           // padding: const EdgeInsets.all(0.0),
           padding: const EdgeInsets.only(left: 0.0,top: 0,bottom: 2),
@@ -217,12 +177,10 @@ class _ForumscreenState extends State<Forumscreen> {
                 },
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 3.5),
-                  // padding: const EdgeInsets.only(top: 10.0,left: 10.0,right: 10.0,bottom: 15),
                   child: Container(
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(color: Colors.grey, width: 0.5),
-
                       ),
                       color: Colors.white
                     ),
@@ -451,7 +409,6 @@ class _ForumscreenState extends State<Forumscreen> {
             }
           });
         },
-
         backgroundColor: Color(0xff323465),
         child:  Icon(Icons.add,size: 40,color: Colors.white,),
       ),

@@ -166,7 +166,11 @@ class _FacultyRoutineScreenState extends State<FacultyRoutineScreen> with Single
                         : Image.asset(errorMessage);
                   }).toList(),
                 )
-                    : Center(child: CircularProgressIndicator()),
+                    : Container(
+                    height: MediaQuery.of(context).size.height*0.9,
+                    width: MediaQuery.of(context).size.width,
+                    child: Image.asset('assets/no_data.png')
+                ),
               ),
             ),
           ],

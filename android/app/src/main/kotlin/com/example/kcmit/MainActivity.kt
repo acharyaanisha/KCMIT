@@ -1,4 +1,4 @@
-package com.example.kcmit
+package com.cosmotech.kcmit
 
 import io.flutter.embedding.android.FlutterActivity
 

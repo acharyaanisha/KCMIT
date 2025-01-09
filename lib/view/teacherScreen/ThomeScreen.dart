@@ -174,13 +174,6 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                                 margin: EdgeInsets.symmetric(horizontal: 5.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black26,
-                                      blurRadius: 10,
-                                      offset: Offset(0, 4),
-                                    ),
-                                  ],
                                 ),
                                 child: Stack(
                                     children:[
@@ -281,7 +274,7 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
                         ),
                         IconAndText(
                             Icons.person,
-                            "Faculty",
+                            "Faculties",
                             FacultyMemberList(),
                             Color(0xffA294F9)),
                         IconAndText(
@@ -428,41 +421,4 @@ class _TeachHomeScreenState extends State<TeachHomeScreen> with SingleTickerProv
   }
 }
 
-
-class Section2 extends StatelessWidget {
-  final String title;
-  // final List<IconAndText> iconsAndTexts;
-  // final String? image;
-
-  const Section2({super.key, required this.title, });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(0.0),
-        // color: const Color(0xFFF3F5F8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0, top: 15.0,bottom: 15),
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16.0,
-                color: Color(0xff000000),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          Card(
-
-          )
-        ],
-      ),
-    );
-  }
-}
 

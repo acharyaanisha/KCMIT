@@ -7,6 +7,7 @@ import 'package:kcmit/service/config.dart';
 import 'package:kcmit/view/authentication/forgetPassword.dart';
 import 'package:kcmit/view/parentScreen/pauthentication/loginAsParent.dart';
 import 'package:kcmit/view/studentScreen/HomeMain.dart';
+import 'package:kcmit/view/studentScreen/sauthentication/registerStudent.dart';
 import 'package:kcmit/view/teacherScreen/tauthentication/loginAsTeacher.dart';
 import 'package:kcmit/view/studentScreen/studentToken.dart';
 import 'package:provider/provider.dart';
@@ -204,7 +205,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
               children: [
                 const SizedBox(height: 200.0),
                 _buildWelcomeText(),
-                const SizedBox(height: 40.0),
+                SizedBox(height: MediaQuery.of(context).size.height*0.04),
                 _buildTextField(
                   controller: usernameController,
                   label: 'Enter email',
@@ -223,9 +224,6 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
                       errorMessage!,
                       style: const TextStyle(color: Colors.red, fontSize: 14),
                     ),
-                    // child: Image.asset(
-                    //   errorMessage!,
-                    //   ),
                   ),
                 if (successMessage != null)
                   Padding(
@@ -235,13 +233,14 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
                       style: const TextStyle(color: Colors.green, fontSize: 14),
                     ),
                   ),
-                const SizedBox(height: 20.0),
-                _buildLoginOptions(),
-                const SizedBox(height: 20.0),
+                SizedBox(height: MediaQuery.of(context).size.height*0.05),
+                // _buildLoginOptions(),
                 _buildLoginButton(),
-                const SizedBox(height: 10.0),
+                SizedBox(height: MediaQuery.of(context).size.height*0.001),
+                _buildRegisterOption(),
+                SizedBox(height: MediaQuery.of(context).size.height*0.001),
                 _buildLoginAsTeacher(),
-                const SizedBox(height: 20.0),
+                SizedBox(height: MediaQuery.of(context).size.height*0.001),
               ],
             ),
           ),
@@ -252,6 +251,7 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
 
   Widget _buildWelcomeText() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           "Let's Sign in",
@@ -382,6 +382,26 @@ class _LoginAsStudentState extends State<LoginAsStudent> {
               "Login as Teacher?",
               style: TextStyle(color: Color(0xff323465)),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildRegisterOption() {
+    return Center(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text("Don't have an account? "),
+          TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RegisterStudent()),
+              );
+            },
+            child:  Text("Register",style: TextStyle(color: Color(0xff323465),),),
           ),
         ],
       ),

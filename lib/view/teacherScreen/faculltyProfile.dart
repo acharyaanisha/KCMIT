@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:kcmit/view/teacherScreen/facultySetting.dart';
 import 'package:flutter/material.dart';
 import 'package:kcmit/model/profileModel/facultyProfileModel.dart';
 import 'package:kcmit/service/config.dart';
@@ -126,68 +127,88 @@ class _FacultyProfileScreenState extends State<FacultyProfileScreen> {
               //   ),
               //   color: Colors.white,
               //   child:
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: Colors.deepPurple[100],
-                        radius: 60,
-                        child: facultyProfile?.profile_pic != null &&
-                            facultyProfile!.profile_pic!.isNotEmpty
-                            ? ClipOval(
-                          child: Image.network(
-                            facultyProfile!.profile_pic!.startsWith('http')
-                                ? facultyProfile!.profile_pic!
-                                : "http://kcmit-api.kcmit.edu.np:5000/${facultyProfile!.profile_pic!}",
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Icon(
-                                Icons.person,
-                                color: Color(0xff323465),
-                                size: 50,
-                              );
-                            },
-                          ),
-                        )
-                            : const Icon(
-                          Icons.person,
+              Padding(
+                padding: const EdgeInsets.only(top:1.0,left: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 300.0),
+                      child: IconButton(onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FacultySetting()),
+                        );
+                      },
+                          icon: Icon(Icons.settings_outlined,color: Color(0xff323465),)),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height*0.155,
+                      width: MediaQuery.of(context).size.width*0.32,
+                      decoration: BoxDecoration(
+                        border: Border.all(
                           color: Color(0xff323465),
-                          size: 50,
+                          width: 1.0,
                         ),
+                        color: Colors.transparent,
+                        shape: BoxShape.rectangle,
+                        // color: Color(0xff323465),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        facultyProfile?.name ?? 'N/A',
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          // color: Color(0xff323465),
+                      child: facultyProfile?.profile_pic != null &&
+                          facultyProfile!.profile_pic!.isNotEmpty
+                          ? ClipRRect(
+                        child: Image.network(
+                          facultyProfile!.profile_pic!.startsWith('http')
+                              ? facultyProfile!.profile_pic!
+                              : "http://kcmit-api.kcmit.edu.np:5000/${facultyProfile!.profile_pic!}",
+                          height: MediaQuery.of(context).size.height*0.15,
+                          width: MediaQuery.of(context).size.width*0.3,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Icon(
+                              Icons.person,
+                              color: Color(0xff323465),
+                              size: 50,
+                            );
+                          },
                         ),
+                      )
+                          : const Icon(
+                        Icons.person,
+                        color: Color(0xff323465),
+                        size: 50,
                       ),
-                      const SizedBox(height: 10),
-                      InfoRow(
-                        icon: Icons.cast_for_education_outlined,
-                        label: facultyProfile?.qualification ?? 'N/A',
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      facultyProfile?.name ?? 'N/A',
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        // color: Color(0xff323465),
                       ),
-                      InfoRow(
-                        icon: Icons.psychology_outlined,
-                        label: facultyProfile?.specialization ?? 'N/A',
-                      ),
-                      InfoRow(
-                        icon: Icons.phone,
-                        label: facultyProfile?.mobileNumber ?? 'N/A',
-                      ),
-                      InfoRow(
-                        icon: Icons.email_outlined,
-                        label: facultyProfile?.email ?? 'N/A',
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 10),
+                    InfoRow(
+                      icon: Icons.cast_for_education_outlined,
+                      label: facultyProfile?.qualification ?? 'N/A',
+                    ),
+                    InfoRow(
+                      icon: Icons.psychology_outlined,
+                      label: facultyProfile?.specialization ?? 'N/A',
+                    ),
+                    InfoRow(
+                      icon: Icons.phone,
+                      label: facultyProfile?.mobileNumber ?? 'N/A',
+                    ),
+                    InfoRow(
+                      icon: Icons.email_outlined,
+                      label: facultyProfile?.email ?? 'N/A',
+                    ),
+                  ],
                 ),
+              ),
               // ),
             ],
           ),

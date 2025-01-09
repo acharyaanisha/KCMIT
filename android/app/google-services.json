@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:995076747381:android:a0a8a9c40fc0d81796c83c",
+        "mobilesdk_app_id": "1:995076747381:android:c30cebab7ee74ec696c83c",
         "android_client_info": {
-          "package_name": "com.example.kcmit"
+          "package_name": "com.cosmotech.kcmit"
         }
       },
       "oauth_client": [],

@@ -104,7 +104,7 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
                 unselectedLabelStyle: const TextStyle(fontSize: 14),
                 tabs: const [
                   Tab(text: "Assessment Result"),
-                  Tab(text: "Board Result"),
+                  Tab(text: "TU Exam Result"),
                 ],
               ),
             ),
@@ -122,8 +122,13 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-
-                    GridView.builder(
+                    examList.isEmpty
+                        ? Container(
+                height: MediaQuery.of(context).size.height*0.8,
+                  width: MediaQuery.of(context).size.width,
+                  child: Image.asset('assets/no_data.png')
+              )
+                        : GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -145,21 +150,24 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => StudentResultScreen(examSetupUuid: examSetupUuid,)),
+                              MaterialPageRoute(
+                                builder: (context) => StudentResultScreen(examSetupUuid: examSetupUuid),
+                              ),
                             );
                           },
                           child: Card(
                             color: color,
                             elevation: 5,
-
                             child: Stack(
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(15.0),
                                   child: Padding(
                                     padding: const EdgeInsets.all(50.0),
-                                    child: Icon(Icons.assignment_outlined,size: 70,
-                                              color: Colors.white,
+                                    child: Icon(
+                                      Icons.assignment_outlined,
+                                      size: 70,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
@@ -171,10 +179,9 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
                                     padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                                     decoration: BoxDecoration(
                                       color: Colors.black.withOpacity(0.5),
-                                      borderRadius: BorderRadius.circular(12)
+                                      borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child:
-                                    Text(
+                                    child: Text(
                                       exam['examSetupName'],
                                       style: const TextStyle(
                                         fontSize: 12.0,
@@ -190,55 +197,22 @@ class _StudentResultState extends State<StudentResult> with SingleTickerProvider
                           ),
                         );
                       },
-                    )
-
-
-                    // ResultSection(
-                    //   title: "",
-                    //   iconsAndTexts: [
-                    //     IconAndText(
-                    //         Icons.assignment_outlined,
-                    //         examList['name'],
-                    //         StudentResultScreen(),
-                    //         Colors.deepPurple.shade300
-                    //     ),
-                    //     IconAndText(
-                    //         Icons.assignment_outlined,
-                    //         "Result",
-                    //         StudentResultScreen(),
-                    //         Colors.red.shade300
-                    //     ),
-                    //     IconAndText(
-                    //         Icons.assignment_outlined,
-                    //         "Result",
-                    //         StudentResultScreen(),
-                    //         Colors.green.shade300
-                    //     ),
-                    //     IconAndText(
-                    //         Icons.assignment_outlined,
-                    //         "Result",
-                    //         StudentResultScreen(),
-                    //         Colors.blue.shade300
-                    //     ),
-                    //     IconAndText(
-                    //         Icons.assignment_outlined,
-                    //         "Result",
-                    //         StudentResultScreen(),
-                    //         Colors.orange.shade300
-                    //     ),
-                    //   ],
-                    // ),
-
+                    ),
                   ],
                 ),
               ),
             ),
 
+
             // Board Tab
             Padding(
               padding: const EdgeInsets.all(25.0),
               child: SingleChildScrollView(
-                child: Text("Board Result Content"),
+                child: Container(
+                    height: MediaQuery.of(context).size.height*0.8,
+                    width: MediaQuery.of(context).size.width,
+                    child: Image.asset('assets/no_data.png')
+                ),
               ),
             ),
           ],
